@@ -4,22 +4,22 @@ const form = document.getElementById('tracker-form');
 const text = document.getElementById('desc');
 const amount = document.getElementById('amount');
 const category = document.getElementById('category');
+const editIdInput = document.getElementById('edit-id');
+const submitBtn = document.getElementById('form-submit-btn');
 const balanceCard = document.getElementById('balance-card');
 const appContainer = document.getElementById('app-container');
 
-// Map categories to specific live accent colors
 const categoryColors = {
-  'General': '#7f8c8d',       // Gray
-  'Food': '#f39c12',          // Orange
-  'Salary': '#2ecc71',        // Green
-  'Rent': '#9b59b6',          // Purple
-  'Entertainment': '#3498db'  // Blue
+  'General': '#7f8c8d',
+  'Food': '#f39c12',
+  'Salary': '#2ecc71',
+  'Rent': '#9b59b6',
+  'Entertainment': '#3498db'
 };
 
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-// Toggle between Dark and Light Mode live
 function toggleTheme() {
   isDarkMode = !isDarkMode;
   localStorage.setItem('darkMode', isDarkMode);
@@ -38,17 +38,41 @@ function applyTheme() {
   }
 }
 
-function addTransaction(e) {
+// Handles both Creating and Updating transactions
+function saveTransaction(e) {
   e.preventDefault();
   
-  const transaction = {
-    id: Date.now(),
-    text: text.value,
-    amount: +amount.value,
-    cat: category.value
-  };
+  if (text.value.trim() === '' || amount.value.trim() === '') {
+    alert('Please complete all fields');
+    return;
+  }
+
+  const editId = editIdInput.value;
+
+  if (editId) {
+    // UPDATE EXISTNG: Find the item by ID and modify it
+    transactions = transactions.map(t => t.id == editId ? {
+      ...t,
+      text: text.value,
+      amount: +amount.value,
+      cat: category.value
+    } : t);
+    
+    // Reset form button status
+    submitBtn.innerText = 'Add Transaction';
+    submitBtn.style.background = '#2ecc71';
+    editIdInput.value = '';
+  } else {
+    // CREATE NEW
+    const transaction = {
+      id: Date.now(),
+      text: text.value,
+      amount: +amount.value,
+      cat: category.value
+    };
+    transactions.push(transaction);
+  }
   
-  transactions.push(transaction);
   init();
   updateLocalStorage();
   
@@ -56,12 +80,26 @@ function addTransaction(e) {
   amount.value = '';
 }
 
+// Click item to load its current values back into form fields
+function editTransaction(id) {
+  const transactionToEdit = transactions.find(t => t.id === id);
+  if (!transactionToEdit) return;
+
+  text.value = transactionToEdit.text;
+  amount.value = transactionToEdit.amount;
+  category.value = transactionToEdit.cat;
+  editIdInput.value = transactionToEdit.id; // Set hidden ID tracker
+
+  submitBtn.innerText = 'Update Transaction';
+  submitBtn.style.background = '#3498db'; // Change button blue during edit mode
+  window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll smoothly back up to inputs
+}
+
 function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
   const dotColor = categoryColors[t.cat] || '#7f8c8d';
 
-  // Apply responsive card styles directly via JS
   item.style.padding = "12px";
   item.style.margin = "8px 0";
   item.style.borderRadius = "6px";
@@ -70,19 +108,23 @@ function addTransactionDOM(t) {
   item.style.display = "flex";
   item.style.justifyContent = "space-between";
   item.style.alignItems = "center";
-  item.style.borderLeft = `6px solid ${dotColor}`; // Color coded by category
+  item.style.borderLeft = `6px solid ${dotColor}`;
+  item.style.cursor = 'pointer';
+  
+  // Clicking the card fires edit, clicking X deletes
+  item.setAttribute('onclick', `editTransaction(${t.id})`);
 
   item.innerHTML = `
     <div>
       <span style="font-weight:bold;">${t.text}</span> 
       <br>
-      <small style="color:#bdc3c7; background:${dotColor}; color:white; padding:1px 5px; border-radius:3px; font-size:10px;">${t.cat}</small>
+      <small style="background:${dotColor}; color:white; padding:1px 5px; border-radius:3px; font-size:10px;">${t.cat}</small>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 15px;">
       <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: bold;">
         ${isExpense ? '-' : '+'}$${Math.abs(t.amount)}
       </span>
-      <button onclick="removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px;">✕</button>
+      <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px;">✕</button>
     </div>
   `;
   list.appendChild(item);
@@ -113,12 +155,11 @@ function init() {
   const total = transactions.reduce((acc, t) => acc + t.amount, 0);
   balance.innerText = total.toFixed(2);
   
-  // Real-time Balance Box background colors based on total money
   if (total < 0) {
-    balanceCard.style.backgroundColor = '#fadbd8'; // Red tint for debt
+    balanceCard.style.backgroundColor = '#fadbd8';
     balanceCard.style.color = '#78281f';
   } else if (total > 0) {
-    balanceCard.style.backgroundColor = '#d4efdf'; // Green tint for profit
+    balanceCard.style.backgroundColor = '#d4efdf';
     balanceCard.style.color = '#145a32';
   } else {
     balanceCard.style.backgroundColor = isDarkMode ? '#34495e' : '#f1f2f6';
@@ -128,5 +169,5 @@ function init() {
   applyTheme();
 }
 
-form.addEventListener('submit', addTransaction);
+form.addEventListener('submit', saveTransaction);
 init();
