@@ -38,14 +38,10 @@ function applyTheme() {
   }
 }
 
-// ADVANCED MATHEMATICAL EVALUATOR FOR (+, -, *, /)
 function calculateAmount(inputVal) {
   try {
-    // Only allow numbers and operators: 0-9, +, -, *, /, and decimals
     const sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
     if (!sanitized) return 0;
-    
-    // Safely evaluate the math calculation string
     const result = Function(`"use strict"; return (${sanitized})`)();
     return isNaN(result) || !isFinite(result) ? null : result;
   } catch (error) {
@@ -61,29 +57,25 @@ function saveTransaction(e) {
     return;
   }
 
-  // Calculate math expression dynamically
   const finalAmount = calculateAmount(amount.value);
   if (finalAmount === null) {
-    alert('Invalid calculation! Please use clear numbers and +, -, *, or / keys.');
+    alert('Invalid calculation! Use numbers and +, -, *, or / keys.');
     return;
   }
 
   const editId = editIdInput.value;
 
   if (editId) {
-    // UPDATE EXISTING
     transactions = transactions.map(t => t.id == editId ? {
       ...t,
       text: text.value,
       amount: finalAmount,
       cat: category.value
     } : t);
-    
     submitBtn.innerText = 'Add Transaction';
     submitBtn.style.background = '#2ecc71';
     editIdInput.value = '';
   } else {
-    // CREATE NEW
     const transaction = {
       id: Date.now(),
       text: text.value,
@@ -95,7 +87,6 @@ function saveTransaction(e) {
   
   init();
   updateLocalStorage();
-  
   text.value = '';
   amount.value = '';
 }
@@ -129,7 +120,6 @@ function addTransactionDOM(t) {
   item.style.alignItems = "center";
   item.style.borderLeft = `6px solid ${dotColor}`;
   item.style.cursor = 'pointer';
-  
   item.setAttribute('onclick', `editTransaction(${t.id})`);
 
   item.innerHTML = `
@@ -170,7 +160,6 @@ function init() {
   list.innerHTML = '';
   transactions.forEach(addTransactionDOM);
   
-  // Set the default starting baseline balance to 10000
   const startingBalance = 10000;
   const transactionTotal = transactions.reduce((acc, t) => acc + t.amount, 0);
   const total = startingBalance + transactionTotal;
@@ -181,7 +170,7 @@ function init() {
     balanceCard.style.backgroundColor = '#fadbd8';
     balanceCard.style.color = '#78281f';
   } else if (total > startingBalance) {
-    balanceCard.style.backgroundColor = '#d4efdf'; // Green if you have more than 10k
+    balanceCard.style.backgroundColor = '#d4efdf';
     balanceCard.style.color = '#145a32';
   } else {
     balanceCard.style.backgroundColor = isDarkMode ? '#34495e' : '#f1f2f6';
