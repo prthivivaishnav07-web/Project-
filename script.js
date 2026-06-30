@@ -30,19 +30,30 @@ function applyTheme() {
   if (isDarkMode) {
     document.body.style.backgroundColor = '#1a1a1a';
     appContainer.style.color = '#ffffff';
-    document.getElementById('theme-btn').innerText = 'Light Mode ☀️';
+    if(document.getElementById('theme-btn')) document.getElementById('theme-btn').innerText = 'Light Mode ☀️';
   } else {
     document.body.style.backgroundColor = '#ffffff';
     appContainer.style.color = '#000000';
-    document.getElementById('theme-btn').innerText = 'Dark Mode 🌙';
+    if(document.getElementById('theme-btn')) document.getElementById('theme-btn').innerText = 'Dark Mode 🌙';
   }
 }
 
+// Fixed calculation parser that safely handles subtraction/multiplication
 function calculateAmount(inputVal) {
   try {
-    const sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
+    // Remove everything except numbers and math operators
+    let sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
     if (!sanitized) return 0;
-    const result = Function(`"use strict"; return (${sanitized})`)();
+    
+    // Solve the math equation string
+    let result = Function(`"use strict"; return (${sanitized})`)();
+    
+    // SMART TRACKER: If you are purchasing something (Food, Clothes, Rent) 
+    // and typed a normal positive number, force it to be a subtraction expense!
+    if (result > 0 && category.value !== 'Salary') {
+      result = -result;
+    }
+    
     return isNaN(result) || !isFinite(result) ? null : result;
   } catch (error) {
     return null;
@@ -59,7 +70,7 @@ function saveTransaction(e) {
 
   const finalAmount = calculateAmount(amount.value);
   if (finalAmount === null) {
-    alert('Invalid calculation! Use numbers and +, -, *, or / keys.');
+    alert('Invalid calculation!');
     return;
   }
 
@@ -72,8 +83,10 @@ function saveTransaction(e) {
       amount: finalAmount,
       cat: category.value
     } : t);
-    submitBtn.innerText = 'Add Transaction';
-    submitBtn.style.background = '#2ecc71';
+    if(submitBtn) {
+      submitBtn.innerText = 'Add Transaction';
+      submitBtn.style.background = '#2ecc71';
+    }
     editIdInput.value = '';
   } else {
     const transaction = {
@@ -96,12 +109,14 @@ function editTransaction(id) {
   if (!transactionToEdit) return;
 
   text.value = transactionToEdit.text;
-  amount.value = transactionToEdit.amount; 
+  amount.value = Math.abs(transactionToEdit.amount); 
   category.value = transactionToEdit.cat;
   editIdInput.value = transactionToEdit.id;
 
-  submitBtn.innerText = 'Update Transaction';
-  submitBtn.style.background = '#3498db';
+  if(submitBtn) {
+    submitBtn.innerText = 'Update Transaction';
+    submitBtn.style.background = '#3498db';
+  }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
