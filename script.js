@@ -38,7 +38,21 @@ function applyTheme() {
   }
 }
 
-// Handles both Creating and Updating transactions
+// ADVANCED MATHEMATICAL EVALUATOR FOR (+, -, *, /)
+function calculateAmount(inputVal) {
+  try {
+    // Only allow numbers and operators: 0-9, +, -, *, /, and decimals
+    const sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
+    if (!sanitized) return 0;
+    
+    // Safely evaluate the math calculation string
+    const result = Function(`"use strict"; return (${sanitized})`)();
+    return isNaN(result) || !isFinite(result) ? null : result;
+  } catch (error) {
+    return null;
+  }
+}
+
 function saveTransaction(e) {
   e.preventDefault();
   
@@ -47,18 +61,24 @@ function saveTransaction(e) {
     return;
   }
 
+  // Calculate math expression dynamically
+  const finalAmount = calculateAmount(amount.value);
+  if (finalAmount === null) {
+    alert('Invalid calculation! Please use clear numbers and +, -, *, or / keys.');
+    return;
+  }
+
   const editId = editIdInput.value;
 
   if (editId) {
-    // UPDATE EXISTNG: Find the item by ID and modify it
+    // UPDATE EXISTING
     transactions = transactions.map(t => t.id == editId ? {
       ...t,
       text: text.value,
-      amount: +amount.value,
+      amount: finalAmount,
       cat: category.value
     } : t);
     
-    // Reset form button status
     submitBtn.innerText = 'Add Transaction';
     submitBtn.style.background = '#2ecc71';
     editIdInput.value = '';
@@ -67,7 +87,7 @@ function saveTransaction(e) {
     const transaction = {
       id: Date.now(),
       text: text.value,
-      amount: +amount.value,
+      amount: finalAmount,
       cat: category.value
     };
     transactions.push(transaction);
@@ -80,19 +100,18 @@ function saveTransaction(e) {
   amount.value = '';
 }
 
-// Click item to load its current values back into form fields
 function editTransaction(id) {
   const transactionToEdit = transactions.find(t => t.id === id);
   if (!transactionToEdit) return;
 
   text.value = transactionToEdit.text;
-  amount.value = transactionToEdit.amount;
+  amount.value = transactionToEdit.amount; 
   category.value = transactionToEdit.cat;
-  editIdInput.value = transactionToEdit.id; // Set hidden ID tracker
+  editIdInput.value = transactionToEdit.id;
 
   submitBtn.innerText = 'Update Transaction';
-  submitBtn.style.background = '#3498db'; // Change button blue during edit mode
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll smoothly back up to inputs
+  submitBtn.style.background = '#3498db';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function addTransactionDOM(t) {
@@ -111,7 +130,6 @@ function addTransactionDOM(t) {
   item.style.borderLeft = `6px solid ${dotColor}`;
   item.style.cursor = 'pointer';
   
-  // Clicking the card fires edit, clicking X deletes
   item.setAttribute('onclick', `editTransaction(${t.id})`);
 
   item.innerHTML = `
@@ -122,7 +140,7 @@ function addTransactionDOM(t) {
     </div>
     <div style="display: flex; align-items: center; gap: 15px;">
       <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: bold;">
-        ${isExpense ? '-' : '+'}$${Math.abs(t.amount)}
+        ${isExpense ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}
       </span>
       <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px;">✕</button>
     </div>
@@ -152,14 +170,18 @@ function init() {
   list.innerHTML = '';
   transactions.forEach(addTransactionDOM);
   
-  const total = transactions.reduce((acc, t) => acc + t.amount, 0);
+  // Set the default starting baseline balance to 10000
+  const startingBalance = 10000;
+  const transactionTotal = transactions.reduce((acc, t) => acc + t.amount, 0);
+  const total = startingBalance + transactionTotal;
+  
   balance.innerText = total.toFixed(2);
   
   if (total < 0) {
     balanceCard.style.backgroundColor = '#fadbd8';
     balanceCard.style.color = '#78281f';
-  } else if (total > 0) {
-    balanceCard.style.backgroundColor = '#d4efdf';
+  } else if (total > startingBalance) {
+    balanceCard.style.backgroundColor = '#d4efdf'; // Green if you have more than 10k
     balanceCard.style.color = '#145a32';
   } else {
     balanceCard.style.backgroundColor = isDarkMode ? '#34495e' : '#f1f2f6';
