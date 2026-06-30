@@ -14,15 +14,13 @@
 
         <div class="balance-box" id="balance-card" style="padding: 20px; background: #f1f2f6; border-radius: 8px; text-align: center; margin-bottom: 20px;">
             <h3>Current Balance</h3>
-            <div class="balance" style="font-size: 24px; font-weight: bold;">$<span id="balance">0.00</span></div>
+            <div class="balance" style="font-size: 24px; font-weight: bold;">$<span id="balance">10000.00</span></div>
         </div>
 
         <form id="tracker-form">
-            <!-- Hidden input to store ID when editing -->
             <input type="hidden" id="edit-id" value="">
-            
             <input type="text" id="desc" placeholder="Description" required>
-            <input type="number" id="amount" placeholder="Amount (e.g., -20 or 50)" required>
+            <input type="text" id="amount" placeholder="Amount (e.g., -5*20 or 500/2)" required>
             
             <select id="category">
                 <option value="General">General ⚪</option>
