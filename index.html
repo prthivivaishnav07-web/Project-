@@ -1,1 +1,25 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Finance Tracker</h2>
+        <div class="balance">Balance: $<span id="balance">0.00</span></div>
+        
+        <form id="tracker-form">
+            <input type="text" id="desc" placeholder="Description" required>
+            <input type="number" id="amount" placeholder="Amount (e.g., -20 or 50)" required>
+            <button type="submit">Add Transaction</button>
+        </form>
+
+        <h3>History</h3>
+        <ul id="list" class="list"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
