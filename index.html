@@ -7,10 +7,9 @@
 </head>
 <body>
     <div class="container" id="app-container">
-        <!-- Theme Toggle Button -->
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h2>Finance Tracker</h2>
-            <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:#34495e; color:white; border:0; padding:5px 10px; border-radius:3px;">Toggle Dark Mode</button>
+            <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:#34495e; color:white; border:0; padding:5px 10px; border-radius:3px;">Dark Mode 🌙</button>
         </div>
 
         <div class="balance-box" id="balance-card" style="padding: 20px; background: #f1f2f6; border-radius: 8px; text-align: center; margin-bottom: 20px;">
@@ -19,10 +18,12 @@
         </div>
 
         <form id="tracker-form">
+            <!-- Hidden input to store ID when editing -->
+            <input type="hidden" id="edit-id" value="">
+            
             <input type="text" id="desc" placeholder="Description" required>
             <input type="number" id="amount" placeholder="Amount (e.g., -20 or 50)" required>
             
-            <!-- Category Selection with predefined color types -->
             <select id="category">
                 <option value="General">General ⚪</option>
                 <option value="Food">Food 🍔</option>
@@ -31,12 +32,12 @@
                 <option value="Entertainment">Entertainment 🎮</option>
             </select>
             
-            <button type="submit">Add Transaction</button>
+            <button type="submit" id="form-submit-btn">Add Transaction</button>
         </form>
 
         <button onclick="resetData()" style="margin-top:15px; background:#7f8c8d; color:white; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Reset All Data</button>
 
-        <h3>History</h3>
+        <h3>History (Tap item to Edit)</h3>
         <ul id="list" class="list"></ul>
     </div>
 </body>
