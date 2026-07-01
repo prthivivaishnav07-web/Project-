@@ -11,6 +11,7 @@ const appContainer = document.getElementById('app-container');
 const themeSelect = document.getElementById('theme-select');
 const sidebar = document.getElementById('history-sidebar');
 const sidebarTitle = document.getElementById('sidebar-title');
+const heatmapGrid = document.getElementById('heatmap-grid');
 
 const categoryColors = {
   'Clothes': '#9b59b6',
@@ -20,11 +21,14 @@ const categoryColors = {
   'General': '#7f8c8d'
 };
 
+const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let currentTheme = localStorage.getItem('siteTheme') || 'white';
 
 function toggleSidebar(open) {
-  sidebar.style.right = open ? '0px' : '-300px';
+  sidebar.style.right = open ? '0px' : '-320px';
+  if (open) renderHeatMap();
 }
 
 function changeTheme() {
@@ -35,9 +39,7 @@ function changeTheme() {
 
 function applyThemeStyles() {
   themeSelect.value = currentTheme;
-  const isDark = currentTheme === 'black' || currentTheme === 'blue';
   
-  // Sidebar styling adjustment matching main background theme rules
   if (currentTheme === 'white') {
     document.body.style.backgroundColor = '#ffffff';
     appContainer.style.backgroundColor = '#ffffff';
@@ -64,6 +66,63 @@ function applyThemeStyles() {
     sidebarTitle.style.color = '#ecf0f1';
   }
   init();
+}
+
+// Generate the Calendar Heat Map color scheme elements dynamically
+function renderHeatMap() {
+  heatmapGrid.innerHTML = '';
+  
+  // Group total spend calculations by day index
+  let weeklySpend = [0, 0, 0, 0, 0, 0, 0];
+  
+  transactions.forEach(t => {
+    if (t.amount < 0) { // Expense transactions only
+      const date = new Date(t.timestamp || Date.now());
+      const dayIndex = date.getDay();
+      weeklySpend[dayIndex] += Math.abs(t.amount);
+    }
+  });
+
+  daysOfWeek.forEach((day, index) => {
+    const totalDayCost = weeklySpend[index];
+    let bgColor = '#b2bec3'; // Empty/Low Default (Grey)
+    let fontColor = '#ffffff';
+    let icon = '⚪';
+
+    if (totalDayCost > 0 && totalDayCost <= 500) {
+      bgColor = '#7f8c8d'; // LOW
+      icon = '⚪';
+    } else if (totalDayCost > 500 && totalDayCost <= 2000) {
+      bgColor = '#f1c40f'; // MEDIUM
+      fontColor = '#2d3436';
+      icon = '🟡';
+    } else if (totalDayCost > 2000 && totalDayCost <= 5000) {
+      bgColor = '#e67e22'; // HIGH
+      icon = '🟠';
+    } else if (totalDayCost > 5000) {
+      bgColor = '#c0392b'; // FULL HIGH
+      icon = '🔥';
+    }
+
+    const dayBlock = document.createElement('div');
+    dayBlock.style.background = bgColor;
+    dayBlock.style.color = fontColor;
+    dayBlock.style.padding = '6px 2px';
+    dayBlock.style.borderRadius = '4px';
+    dayBlock.style.fontSize = '10px';
+    dayBlock.style.fontWeight = '700';
+    dayBlock.style.display = 'flex';
+    dayBlock.style.flexDirection = 'column';
+    dayBlock.style.alignItems = 'center';
+    dayBlock.style.gap = '2px';
+    dayBlock.title = `Total Spent: $${totalDayCost.toFixed(2)}`;
+
+    dayBlock.innerHTML = `
+      <span>${day}</span>
+      <span style="font-size:11px;">${icon}</span>
+    `;
+    heatmapGrid.appendChild(dayBlock);
+  });
 }
 
 function formatDuration(timestamp) {
@@ -125,7 +184,6 @@ function saveTransaction(e) {
   updateLocalStorage();
   text.value = '';
   amount.value = '';
-  // Automatically slide open history view so they see the result immediately
   toggleSidebar(true);
 }
 
@@ -195,6 +253,7 @@ function updateLocalStorage() {
 function init() {
   list.innerHTML = '';
   transactions.forEach(addTransactionDOM);
+  renderHeatMap();
   
   const startingBalance = 10000;
   const transactionTotal = transactions.reduce((acc, t) => acc + t.amount, 0);
@@ -224,13 +283,9 @@ if(category) {
   };
 }
 
-// Automatically update time labels inside the sidebar drawer every 30 seconds
 setInterval(() => {
   if (sidebar.style.right === '0px') {
-    const scrollPos = list.scrollTop;
-    list.innerHTML = '';
-    transactions.forEach(addTransactionDOM);
-    list.scrollTop = scrollPos;
+    init();
   }
 }, 30000);
 
