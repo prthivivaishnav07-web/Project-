@@ -28,7 +28,7 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Fixed Dropdown Matrix Database Mapping
+// Data Engine
 const database = {
   "ELECTRONICS ⚡": {
     "Mobiles 📱": {
@@ -83,8 +83,7 @@ const database = {
   }
 };
 
-// --- DATA SANITIZER ---
-// Cleans broken/NaN fields out of localStorage immediately
+// Clear any bad historic arrays from storage instantly
 let rawTransactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 let transactions = rawTransactions.filter(t => t && typeof t.amount === 'number' && !isNaN(t.amount));
 localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
@@ -113,14 +112,12 @@ function handleMainCategoryChange() {
 function populateSubCategories() {
   const selectedMain = mainCategory.value;
   subCategory.innerHTML = '';
-  
   if (!database[selectedMain]) return;
 
   const groups = Object.keys(database[selectedMain]);
   groups.forEach(group => {
     let opt = document.createElement('option');
-    opt.value = group;
-    opt.innerText = group;
+    opt.value = group; opt.innerText = group;
     subCategory.appendChild(opt);
   });
   populateBrands();
@@ -130,14 +127,12 @@ function populateBrands() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
   itemBrand.innerHTML = '';
-
   if (!database[selectedMain] || !database[selectedMain][selectedSub]) return;
 
   const brands = Object.keys(database[selectedMain][selectedSub]);
   brands.forEach(brand => {
     let opt = document.createElement('option');
-    opt.value = brand;
-    opt.innerText = brand;
+    opt.value = brand; opt.innerText = brand;
     itemBrand.appendChild(opt);
   });
   populateModels();
@@ -148,21 +143,14 @@ function populateModels() {
   const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
   itemModel.innerHTML = '';
-
   if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[selectedMain][selectedSub][selectedBrand]) return;
 
   const models = Object.keys(database[selectedMain][selectedSub][selectedBrand]);
-  
-  if (models.length === 1 && models[0] === 'Standard') {
-    modelContainer.style.display = 'none';
-  } else {
-    modelContainer.style.display = 'block';
-  }
+  modelContainer.style.display = (models.length === 1 && models[0] === 'Standard') ? 'none' : 'block';
 
   models.forEach(model => {
     let opt = document.createElement('option');
-    opt.value = model;
-    opt.innerText = model;
+    opt.value = model; opt.innerText = model;
     itemModel.appendChild(opt);
   });
   autoUpdatePrice();
@@ -201,10 +189,10 @@ function recalculateDashboardMetrics() {
   let totalExpenses = 0;
 
   transactions.forEach(t => {
-    let amtVal = parseFloat(t.amount);
-    if (!isNaN(amtVal)) {
-      if (amtVal > 0) totalDeposits += amtVal;
-      else totalExpenses += Math.abs(amtVal);
+    let val = parseFloat(t.amount);
+    if (!isNaN(val)) {
+      if (val > 0) totalDeposits += val;
+      else totalExpenses += Math.abs(val);
     }
   });
 
@@ -225,7 +213,10 @@ function renderYearlyMap() {
   let monthlySpend = Array(12).fill(0);
 
   transactions.forEach(t => {
-    if (t.amount < 0) monthlySpend[t.month] += Math.abs(t.amount);
+    let val = parseFloat(t.amount);
+    if (val < 0 && !isNaN(val)) {
+      monthlySpend[t.month] += Math.abs(val);
+    }
   });
 
   monthsList.forEach((month, index) => {
@@ -252,8 +243,9 @@ function renderDiurnalMap() {
   let periodSpend = { 'Morning': 0, 'Afternoon': 0, 'Evening': 0, 'Night': 0 };
 
   transactions.forEach(t => {
-    if (t.amount < 0 && periodSpend[t.period] !== undefined) {
-      periodSpend[t.period] += Math.abs(t.amount);
+    let val = parseFloat(t.amount);
+    if (val < 0 && !isNaN(val) && periodSpend[t.period] !== undefined) {
+      periodSpend[t.period] += Math.abs(val);
     }
   });
 
@@ -292,12 +284,9 @@ function saveTransaction(e) {
   if (selectedMain === "Custom / Other Deposit 💰") {
     displayTitle = customDesc.value.trim() || 'CUSTOM TRANSACTION';
   } else {
-    const sizeVal = itemModel.value;
-    if (sizeVal && sizeVal !== 'Standard') {
-      displayTitle = `${itemBrand.value} (${sizeVal})`;
-    } else {
-      displayTitle = `${itemBrand.value}`;
-    }
+    const brandVal = itemBrand.value || 'Product';
+    const sizeVal = itemModel.value || 'Standard';
+    displayTitle = (sizeVal && sizeVal !== 'Standard') ? `${brandVal} (${sizeVal})` : `${brandVal}`;
   }
 
   transactions.push({
