@@ -5,14 +5,15 @@
     <title>Vaishnav Shops</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container" id="app-container" style="padding: 20px; max-width: 500px; margin: auto; font-family: Arial, sans-serif; transition: all 0.3s ease;">
+<body style="margin: 0; padding: 20px 10px; font-family: 'Segoe UI', Arial, sans-serif; transition: background 0.3s ease;">
+    <div class="container" id="app-container" style="padding: 24px; max-width: 440px; margin: auto; border-radius: 12px; box-sizing: border-box; transition: all 0.3s ease;">
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0;">🏬 Vaishnav Shops</h2>
-            <div>
-                <label for="theme-select" style="font-size: 12px; font-weight: bold; display: block; margin-bottom: 2px;">Theme:</label>
-                <select id="theme-select" onchange="changeTheme()" style="padding: 5px; border-radius: 4px; cursor: pointer;">
+        <!-- Standard Header Design -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px;">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.5px;">🏬 Vaishnav Shops</h2>
+            <div style="text-align: right; min-width: 90px;">
+                <label for="theme-select" style="font-size: 11px; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px; opacity: 0.8;">Theme</label>
+                <select id="theme-select" onchange="changeTheme()" style="padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 13px; font-weight: 500; cursor: pointer; width: 100%; box-sizing: border-box;">
                     <option value="white">White ⚪</option>
                     <option value="grey">Grey 🔘</option>
                     <option value="black">Black ⚫</option>
@@ -21,27 +22,29 @@
             </div>
         </div>
 
-        <div class="balance-box" id="balance-card" style="padding: 20px; background: #d4efdf; color: #145a32; border-radius: 8px; text-align: center; margin-bottom: 20px; transition: 0.3s;">
-            <h3 style="margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">Available Wallet Balance</h3>
-            <div class="balance" style="font-size: 32px; font-weight: bold; margin-top: 5px;">$<span id="balance">10000.00</span></div>
+        <!-- Wallet Card -->
+        <div class="balance-box" id="balance-card" style="padding: 22px; background: #d4efdf; color: #145a32; border-radius: 10px; text-align: center; margin-bottom: 25px; transition: 0.3s;">
+            <h3 style="margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; opacity: 0.9;">Available Wallet Balance</h3>
+            <div class="balance" style="font-size: 34px; font-weight: 700; margin-top: 6px; letter-spacing: -0.5px;">$<span id="balance">10000.00</span></div>
         </div>
 
-        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 15px;">
+        <!-- Interactive Shopping Form -->
+        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 18px;">
             <input type="hidden" id="edit-id" value="">
             
             <div>
-                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Item Description:</label>
-                <input type="text" id="desc" placeholder="e.g., Apparel, Groceries, Electronics" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>
+                <label style="font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px;">Item Description</label>
+                <input type="text" id="desc" placeholder="e.g., Apparel, Groceries, Electronics" style="width: 100%; padding: 11px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; transition: 0.2s;" required>
             </div>
             
             <div>
-                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Item Price / Value:</label>
-                <input type="text" id="amount" placeholder="e.g., 2000 or 4*500" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;" required>
+                <label style="font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px;">Item Price / Value</label>
+                <input type="text" id="amount" placeholder="e.g., 2000 or 4*500" style="width: 100%; padding: 11px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; transition: 0.2s;" required>
             </div>
             
             <div>
-                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Transaction Category:</label>
-                <select id="category" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; cursor: pointer;">
+                <label style="font-weight: 600; font-size: 14px; display: block; margin-bottom: 6px;">Transaction Category</label>
+                <select id="category" style="width: 100%; padding: 11px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; cursor: pointer; background-color: #fff;">
                     <option value="Clothes">Clothes 👗 (Purple Tag)</option>
                     <option value="Food">Food 🍔 (Orange Tag)</option>
                     <option value="Electronics">Electronics ⚡ (Blue Tag)</option>
@@ -50,15 +53,16 @@
                 </select>
             </div>
             
-            <button type="submit" id="form-submit-btn" style="background: #e74c3c; color: white; width: 100%; padding: 12px; font-size: 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.2s;">Purchase Item (Subtract)</button>
+            <button type="submit" id="form-submit-btn" style="background: #e74c3c; color: white; width: 100%; padding: 13px; font-size: 15px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 5px;">Purchase Item (Subtract)</button>
         </form>
 
-        <button onclick="resetData()" style="margin-top: 20px; background: #7f8c8d; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold;">Reset Inventory & Wallet</button>
+        <button onclick="resetData()" style="margin-top: 20px; background: #7f8c8d; color: white; border: none; padding: 11px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s;">Reset Inventory & Wallet</button>
 
-        <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 8px;">Verified Expense Log</h3>
+        <h3 style="margin-top: 30px; border-bottom: 2px solid #eee; padding-bottom: 8px; font-size: 16px; font-weight: 600;">Verified Expense Log</h3>
         <ul id="list" class="list" style="list-style: none; padding: 0; margin: 0;"></ul>
     </div>
 
+    <!-- Script Connection -->
     <script src="script.js"></script>
 </body>
 </html>
