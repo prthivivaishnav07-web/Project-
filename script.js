@@ -31,75 +31,82 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Database Keys match exactly stripped strings
+// Clean Database Matrix - Totally Emoji-Safe 
 const database = {
   "ELECTRONICS": {
-    "Mobiles 📱": {
+    "Mobiles": {
       "Apple": { "iPhone 14": 54900, "iPhone 15": 68900, "iPhone 16": 79900 },
       "Samsung": { "Galaxy S24": 74999, "Galaxy S25": 82300 },
       "OPPO": { "A3 Pro 5G": 17999, "Reno 12": 32500 }
     },
-    "Laptops 💻": {
+    "Laptops": {
       "Apple": { "MacBook Air M2": 84400, "MacBook Air M3": 104900 },
       "HP": { "Victus 15": 62000, "Pavilion 14": 68500 },
       "Dell": { "Inspiron 15": 54000 }
     }
   },
   "FOOD & DINING": {
-    "Pizza Menu 🍕": {
+    "Pizza Menu": {
       "Margherita Pizza": { "Small": 199, "Medium": 299, "Large": 449 },
       "Farmhouse Pizza": { "Small": 299, "Medium": 449, "Large": 649 }
     },
-    "Burgers Menu 🍔": {
+    "Burgers Menu": {
       "Crispy Veg Burger": { "Standard": 129 },
       "Cheese Burger": { "Standard": 159 },
       "Chicken Maharaja": { "Standard": 299 }
     },
-    "Wraps & Rolls 🌯": {
+    "Wraps & Rolls": {
       "Veg Kathi Roll": { "Standard": 120 },
       "Chicken Tikka Wrap": { "Standard": 180 }
     },
-    "Sandwiches 🥪": {
+    "Sandwiches": {
       "Club Sandwich": { "Standard": 140 },
       "Grilled Cheese": { "Standard": 110 }
     },
-    "Fries & Sides 🍟": {
+    "Fries & Sides": {
       "Classic Fries": { "Regular": 99, "Large": 149 },
       "Garlic Breadsticks": { "Standard": 139 }
     },
-    "Momos 🥟": {
+    "Momos": {
       "Steamed Veg Momos": { "Standard": 100 },
       "Fried Chicken Momos": { "Standard": 140 }
     },
-    "Chinese 🥢": {
+    "Chinese": {
       "Veg Hakka Noodles": { "Standard": 160 },
       "Manchurian Gravy": { "Standard": 180 }
     },
-    "Beverages 🥤": {
+    "Beverages": {
       "Cold Coffee": { "Standard": 90 },
       "Fresh Lime Soda": { "Standard": 60 }
     },
-    "KFC Menu 🍗": {
+    "KFC Menu": {
       "Chicken Bucket (4pc)": { "Standard": 449 },
       "Zinger Burger": { "Standard": 219 }
     }
   }
 };
 
-// Helper function to safely read the option key ignoring any emojis
-function CleanKey(val) {
-  if(val.toUpperCase().includes("ELECTRONICS")) return "ELECTRONICS";
-  if(val.toUpperCase().includes("FOOD")) return "FOOD & DINING";
+// Safe Key extraction text patterns
+function getCleanMainKey(val) {
+  if (!val) return "CUSTOM";
+  const upper = val.toUpperCase();
+  if (upper.includes("ELECTRONICS")) return "ELECTRONICS";
+  if (upper.includes("FOOD")) return "FOOD & DINING";
   return "CUSTOM";
+}
+
+function getCleanSubKey(val) {
+  if (!val) return "";
+  // Removes all emoji icons and extra empty blank trailing spaces
+  return val.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, '').trim();
 }
 
 let transactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 
 function handleMainCategoryChange() {
-  const rawValue = mainCategory.value;
-  const clean = CleanKey(rawValue);
+  const cleanMain = getCleanMainKey(mainCategory.value);
 
-  if (clean === "CUSTOM") {
+  if (cleanMain === "CUSTOM") {
     subCategoryContainer.style.display = 'none';
     brandContainer.style.display = 'none';
     modelContainer.style.display = 'none';
@@ -112,7 +119,7 @@ function handleMainCategoryChange() {
     customTextContainer.style.display = 'none';
     category.value = 'Expense';
 
-    if (clean === 'ELECTRONICS') {
+    if (cleanMain === 'ELECTRONICS') {
       subCategoryLabel.innerText = "ELECTRONIC ITEM TYPE";
       brandLabel.innerText = "BRAND NAME";
       modelLabel.innerText = "MODEL DESCRIPTION";
@@ -127,13 +134,18 @@ function handleMainCategoryChange() {
 }
 
 function populateSubCategories() {
-  const clean = CleanKey(mainCategory.value);
-  if (!database[clean]) return;
+  const cleanMain = getCleanMainKey(mainCategory.value);
+  if (!database[cleanMain]) return;
 
   subCategory.innerHTML = '';
-  const subs = Object.keys(database[clean]);
-  
-  subs.forEach(sub => {
+  // Raw data display definitions
+  const rawSubs = {
+    "ELECTRONICS": ["Mobiles 📱", "Laptops 💻"],
+    "FOOD & DINING": ["Pizza Menu 🍕", "Burgers Menu 🍔", "Wraps & Rolls 🌯", "Sandwiches 🥪", "Fries & Sides 🍟", "Momos 🥟", "Chinese 🥢", "Beverages 🥤", "KFC Menu 🍗"]
+  };
+
+  const currentSubs = rawSubs[cleanMain] || [];
+  currentSubs.forEach(sub => {
     let opt = document.createElement('option');
     opt.value = sub;
     opt.innerText = sub;
@@ -143,12 +155,12 @@ function populateSubCategories() {
 }
 
 function populateBrands() {
-  const clean = CleanKey(mainCategory.value);
-  const selectedSub = subCategory.value;
-  if (!database[clean]?.[selectedSub]) return;
+  const cleanMain = getCleanMainKey(mainCategory.value);
+  const cleanSub = getCleanSubKey(subCategory.value);
+  if (!database[cleanMain]?.[cleanSub]) return;
 
   itemBrand.innerHTML = '';
-  const brands = Object.keys(database[clean][selectedSub]);
+  const brands = Object.keys(database[cleanMain][cleanSub]);
 
   brands.forEach(brand => {
     let opt = document.createElement('option');
@@ -160,13 +172,13 @@ function populateBrands() {
 }
 
 function populateModels() {
-  const clean = CleanKey(mainCategory.value);
-  const selectedSub = subCategory.value;
+  const cleanMain = getCleanMainKey(mainCategory.value);
+  const cleanSub = getCleanSubKey(subCategory.value);
   const selectedBrand = itemBrand.value;
-  if (!database[clean]?.[selectedSub]?.[selectedBrand]) return;
+  if (!database[cleanMain]?.[cleanSub]?.[selectedBrand]) return;
 
   itemModel.innerHTML = '';
-  const models = Object.keys(database[clean][selectedSub][selectedBrand]);
+  const models = Object.keys(database[cleanMain][cleanSub][selectedBrand]);
 
   if (models.length === 1 && models[0] === 'Standard') {
     modelContainer.style.display = 'none';
@@ -184,13 +196,13 @@ function populateModels() {
 }
 
 function autoUpdatePrice() {
-  const clean = CleanKey(mainCategory.value);
-  const selectedSub = subCategory.value;
+  const cleanMain = getCleanMainKey(mainCategory.value);
+  const cleanSub = getCleanSubKey(subCategory.value);
   const selectedBrand = itemBrand.value;
   const selectedModel = itemModel.value;
 
-  if (database[clean]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
-    amount.value = database[clean][selectedSub][selectedBrand][selectedModel];
+  if (database[cleanMain]?.[cleanSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
+    amount.value = database[cleanMain][cleanSub][selectedBrand][selectedModel];
   }
 }
 
@@ -221,7 +233,7 @@ function recalculateDashboardMetrics() {
   });
 
   const netWorth = startingBalance + totalDeposits - totalExpenses;
-  if (netWorthDisplay) netWorthDisplay.innerText = `₹${netWorth.toFixed(2)}`;
+  if (netWorthDisplay) netWorthDisplay.innerText = `${netWorth.toFixed(2)}`;
 
   const totalPool = startingBalance + totalDeposits;
   const savingsRate = totalPool > 0 ? ((netWorth / totalPool) * 100) : 0;
@@ -299,9 +311,9 @@ function saveTransaction(e) {
 
   let finalAmount = category.value !== 'Salary' ? -Math.abs(parsedAmount) : Math.abs(parsedAmount);
   let displayTitle = '';
-  const clean = CleanKey(mainCategory.value);
+  const cleanMain = getCleanMainKey(mainCategory.value);
 
-  if (clean === "CUSTOM") {
+  if (cleanMain === "CUSTOM") {
     displayTitle = customDesc.value.trim() || 'CUSTOM TRANSACTION';
   } else {
     const sizeVal = itemModel.value;
@@ -356,10 +368,11 @@ function addTransactionDOM(t) {
   if (!list) return;
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
+  const cleanMain = getCleanMainKey(t.mainCat);
   
   let highlightColor = '#2563eb';
-  if (CleanKey(t.mainCat) === "CUSTOM" || t.amount > 0) highlightColor = '#10b981';
-  else if (CleanKey(t.mainCat) === "FOOD & DINING") highlightColor = '#eab308';
+  if (cleanMain === "CUSTOM" || t.amount > 0) highlightColor = '#10b981';
+  else if (cleanMain === "FOOD & DINING") highlightColor = '#eab308';
 
   item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
   item.style.backgroundColor = "#262626"; item.style.color = "#e0e0e0";
