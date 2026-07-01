@@ -9,12 +9,13 @@ const submitBtn = document.getElementById('form-submit-btn');
 const balanceCard = document.getElementById('balance-card');
 const appContainer = document.getElementById('app-container');
 
+// Vivid theme colors mapped to shopping categories
 const categoryColors = {
-  'General': '#7f8c8d',
-  'Food': '#f39c12',
-  'Salary': '#2ecc71',
-  'Rent': '#9b59b6',
-  'Entertainment': '#3498db'
+  'Clothes': '#9b59b6',       // Purple
+  'Food': '#e67e22',          // Orange
+  'Electronics': '#3498db',   // Blue
+  'Salary': '#2ecc71',        // Green (Add cash)
+  'General': '#7f8c8d'        // Gray
 };
 
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
@@ -38,20 +39,19 @@ function applyTheme() {
   }
 }
 
-// Fixed calculation parser that safely handles subtraction/multiplication
+// Math solver supporting operations (+, -, *, /)
 function calculateAmount(inputVal) {
   try {
-    // Remove everything except numbers and math operators
     let sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
     if (!sanitized) return 0;
     
-    // Solve the math equation string
     let result = Function(`"use strict"; return (${sanitized})`)();
     
-    // SMART TRACKER: If you are purchasing something (Food, Clothes, Rent) 
-    // and typed a normal positive number, force it to be a subtraction expense!
-    if (result > 0 && category.value !== 'Salary') {
-      result = -result;
+    // AUTOMATIC SUBTRACTION: Everything subtracts unless it's designated as "Salary/Add Money"
+    if (category.value !== 'Salary') {
+      result = -Math.abs(result); 
+    } else {
+      result = Math.abs(result);
     }
     
     return isNaN(result) || !isFinite(result) ? null : result;
@@ -70,7 +70,7 @@ function saveTransaction(e) {
 
   const finalAmount = calculateAmount(amount.value);
   if (finalAmount === null) {
-    alert('Invalid calculation!');
+    alert('Invalid math format!');
     return;
   }
 
@@ -84,8 +84,8 @@ function saveTransaction(e) {
       cat: category.value
     } : t);
     if(submitBtn) {
-      submitBtn.innerText = 'Add Transaction';
-      submitBtn.style.background = '#2ecc71';
+      submitBtn.innerText = 'Buy Item (Subtract)';
+      submitBtn.style.background = '#e74c3c';
     }
     editIdInput.value = '';
   } else {
@@ -114,7 +114,7 @@ function editTransaction(id) {
   editIdInput.value = transactionToEdit.id;
 
   if(submitBtn) {
-    submitBtn.innerText = 'Update Transaction';
+    submitBtn.innerText = 'Update Item';
     submitBtn.style.background = '#3498db';
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -123,31 +123,32 @@ function editTransaction(id) {
 function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
-  const dotColor = categoryColors[t.cat] || '#7f8c8d';
+  const itemColor = categoryColors[t.cat] || '#7f8c8d';
 
-  item.style.padding = "12px";
-  item.style.margin = "8px 0";
-  item.style.borderRadius = "6px";
+  item.style.padding = "14px";
+  item.style.margin = "10px 0";
+  item.style.borderRadius = "8px";
   item.style.background = isDarkMode ? "#2c3e50" : "#f8f9fa";
   item.style.color = isDarkMode ? "#fff" : "#000";
   item.style.display = "flex";
   item.style.justifyContent = "space-between";
   item.style.alignItems = "center";
-  item.style.borderLeft = `6px solid ${dotColor}`;
+  item.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
+  item.style.borderLeft = `8px solid ${itemColor}`; // Beautiful live color border tag
   item.style.cursor = 'pointer';
   item.setAttribute('onclick', `editTransaction(${t.id})`);
 
   item.innerHTML = `
     <div>
-      <span style="font-weight:bold;">${t.text}</span> 
+      <span style="font-weight:bold; font-size:16px;">${t.text}</span> 
       <br>
-      <small style="background:${dotColor}; color:white; padding:1px 5px; border-radius:3px; font-size:10px;">${t.cat}</small>
+      <span style="background:${itemColor}; color:white; padding:2px 6px; border-radius:4px; font-size:11px; display:inline-block; margin-top:4px;">${t.cat}</span>
     </div>
     <div style="display: flex; align-items: center; gap: 15px;">
-      <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: bold;">
+      <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: bold; font-size:16px;">
         ${isExpense ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}
       </span>
-      <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px;">✕</button>
+      <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:18px;">✕</button>
     </div>
   `;
   list.appendChild(item);
@@ -160,7 +161,7 @@ function removeTransaction(id) {
 }
 
 function resetData() {
-  if (confirm("Are you sure you want to delete all tracker logs?")) {
+  if (confirm("Clear your shopping basket and reset balance to $10,000?")) {
     transactions = [];
     updateLocalStorage();
     init();
@@ -181,17 +182,31 @@ function init() {
   
   balance.innerText = total.toFixed(2);
   
-  if (total < 0) {
-    balanceCard.style.backgroundColor = '#fadbd8';
+  // Real-time card colors changing depending on wallet status
+  if (total <= 0) {
+    balanceCard.style.backgroundColor = '#fadbd8'; // Red tint (No money left)
     balanceCard.style.color = '#78281f';
-  } else if (total > startingBalance) {
-    balanceCard.style.backgroundColor = '#d4efdf';
-    balanceCard.style.color = '#145a32';
+  } else if (total < 4000) {
+    balanceCard.style.backgroundColor = '#fdebd0'; // Orange tint (Low budget warning)
+    balanceCard.style.color = '#7e5109';
   } else {
-    balanceCard.style.backgroundColor = isDarkMode ? '#34495e' : '#f1f2f6';
-    balanceCard.style.color = isDarkMode ? '#fff' : '#000';
+    balanceCard.style.backgroundColor = '#d4efdf'; // Safe green tint
+    balanceCard.style.color = '#145a32';
   }
   
+  // Listen to option changes to change button color live
+  if(category) {
+    category.onchange = () => {
+        if(category.value === 'Salary') {
+            submitBtn.innerText = 'Add Money (Deposit)';
+            submitBtn.style.background = '#2ecc71';
+        } else {
+            submitBtn.innerText = 'Buy Item (Subtract)';
+            submitBtn.style.background = '#e74c3c';
+        }
+    };
+  }
+
   applyTheme();
 }
 
