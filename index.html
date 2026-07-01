@@ -37,10 +37,10 @@
             
             <div>
                 <label style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px;">ITEM</label>
-                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger, Custom Item" style="width: 100%; padding: 11px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box;" required>
+                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger" style="width: 100%; padding: 11px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box;" required>
             </div>
             
-            <!-- Guaranteed Side-by-Side Price and Size Layout -->
+            <!-- Side-by-Side Fields for Price and Size -->
             <div style="display: flex; gap: 12px; width: 100%; box-sizing: border-box;">
                 <div style="flex: 1;">
                     <label style="font-weight: 700; font-size: 13px; display: block; margin-bottom: 6px;">PRICE</label>
@@ -84,12 +84,6 @@
         <div style="margin-bottom: 18px; padding: 10px; background: rgba(0,0,0,0.03); border-radius: 8px;">
             <div style="font-size: 11px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;">Weekly Heat Map</div>
             <div id="heatmap-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center;"></div>
-            <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; margin-top: 10px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 6px;">
-                <span>⚪ LOW</span>
-                <span>🟡 MED</span>
-                <span>🟠 HIGH</span>
-                <span>🔥 MAX</span>
-            </div>
         </div>
 
         <div style="flex: 1; overflow-y: auto;">
