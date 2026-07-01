@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEGOZI VAISHNAV - DYNAMIC DASHBOARD</title>
+    <title>NEGOZI VAISHNAV - FINANCIAL TIMELINE</title>
 </head>
 <body id="body-bg" style="margin: 0; padding: 15px 10px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f6fa; color: #333; transition: background 0.25s ease;">
     
-    <div class="container" id="app-container" style="max-width: 440px; margin: auto; padding: 20px; border-radius: 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dcdde1; box-shadow: 0 4px 10px rgba(0,0,0,0.04); transition: all 0.25s ease;">
+    <div class="container" id="app-container" style="max-width: 500px; margin: auto; padding: 20px; border-radius: 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dcdde1; box-shadow: 0 4px 10px rgba(0,0,0,0.04); transition: all 0.25s ease;">
         
         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 2px solid #e1b12c;">
-            <h2 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.3px;">🏬 NEGOZI VAISHNAV</h2>
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <select id="theme-select" style="padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 11px; font-weight: 700; cursor: pointer; background: #fff; color: #333;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: 0.3px;">🏬 FINANCIAL TIMELINE</h2>
+            <div style="display: flex; align-items: center; gap: 6px;">
+                <select id="theme-select" style="padding: 6px 4px; border-radius: 6px; border: 1px solid #ccc; font-size: 10px; font-weight: 700; cursor: pointer; background: #fff; color: #333;">
                     <option value="white">WHITE ⚪</option>
                     <option value="grey">GREY 🔘</option>
                     <option value="black">BLACK ⚫</option>
@@ -20,12 +20,12 @@
                     <option value="purple">PURPLE 🔮</option>
                     <option value="brown">BROWN 🪵</option>
                 </select>
-                <button type="button" onclick="toggleSidebar(true)" style="background: none; border: none; font-size: 20px; cursor: pointer; color: inherit; padding: 2px 6px;">☰</button>
+                <button type="button" onclick="toggleSidebar(true)" style="background: #3498db; color: white; border: none; font-size: 11px; font-weight:700; padding: 6px 10px; border-radius: 6px; cursor: pointer;">LOGS 🧾</button>
+                <button type="button" onclick="resetData()" style="background: #7f8c8d; color: white; border: none; font-size: 11px; font-weight:700; padding: 6px 10px; border-radius: 6px; cursor: pointer;">RESET 🔄</button>
             </div>
         </div>
 
-        <div id="metrics-board" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-bottom: 16px; border-bottom: 1px solid #dcdde1; transition: border-color 0.25s;">
-            
+        <div id="metrics-board" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-bottom: 16px; border-bottom: 1px solid #dcdde1;">
             <div style="grid-column: span 2; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; padding: 14px; border-radius: 10px; text-align: center; box-shadow: 0 3px 8px rgba(46,204,113,0.15);">
                 <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; opacity: 0.95;">NET WORTH (TOTAL WALLET)</div>
                 <div style="font-size: 28px; font-weight: 800; margin-top: 2px;">$<span id="net-worth">10000.00</span></div>
@@ -39,17 +39,6 @@
             <div style="background: rgba(231, 76, 60, 0.08); border: 1px solid rgba(231, 76, 60, 0.2); padding: 10px; border-radius: 8px; text-align: center;">
                 <div style="font-size: 10px; font-weight: 700; color: #c0392b; text-transform: uppercase;">Daily Burn Rate</div>
                 <div id="burn-rate" style="font-size: 16px; font-weight: 700; margin-top: 2px; color: #c0392b;">$0.00/day</div>
-            </div>
-
-            <div style="background: rgba(155, 89, 182, 0.08); border: 1px solid rgba(155, 89, 182, 0.2); padding: 10px; border-radius: 8px;">
-                <div style="font-size: 10px; font-weight: 700; color: #8e44ad; text-transform: uppercase; text-align: center;">Monthly Income</div>
-                <div id="monthly-income" style="font-size: 15px; font-weight: 700; margin-top: 2px; text-align: center; color: #8e44ad;">$0.00</div>
-                <div id="tax-breakdown" style="font-size: 8.5px; text-align: center; color: #7f8c8d; margin-top: 1px; font-weight: 600;">Incl. 0% Tax/GST</div>
-            </div>
-
-            <div style="background: rgba(230, 126, 34, 0.08); border: 1px solid rgba(230, 126, 34, 0.2); padding: 10px; border-radius: 8px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #d35400; text-transform: uppercase;">Weekly Payments</div>
-                <div id="weekly-payments" style="font-size: 15px; font-weight: 700; margin-top: 2px; color: #d35400;">$0.00</div>
             </div>
         </div>
 
@@ -66,15 +55,44 @@
                 </div>
                 <div style="width: 110px;">
                     <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">SIZE VARIANT</label>
-                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 10px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; cursor: pointer; color: #333;">
+                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 10px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; color: #333;">
                         <option value="SMALL">SMALL 🟢</option>
                         <option value="MEDIUM" selected>MEDIUM 🟡</option>
                         <option value="LARGE">LARGE 🔴</option>
                     </select>
                 </div>
             </div>
+
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <div style="flex: 1;">
+                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px;">TIMELINE MONTH</label>
+                    <select id="timeline-month" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background-color: #fff; font-weight: 600; color: #333;">
+                        <option value="0">January (Jan)</option>
+                        <option value="1">February (Feb)</option>
+                        <option value="2">March (Mar)</option>
+                        <option value="3">April (Apr)</option>
+                        <option value="4">May (May)</option>
+                        <option value="5">June (Jun)</option>
+                        <option value="6" selected>July (Jul)</option>
+                        <option value="7">August (Aug)</option>
+                        <option value="8">September (Sep)</option>
+                        <option value="9">October (Oct)</option>
+                        <option value="10">November (Nov)</option>
+                        <option value="11">December (Dec)</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px;">TIME PERIOD</label>
+                    <select id="timeline-period" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background-color: #fff; font-weight: 600; color: #333;">
+                        <option value="Morning">🌅 Morning (6AM-12PM)</option>
+                        <option value="Afternoon">☀️ Afternoon (12PM-5PM)</option>
+                        <option value="Evening">🌆 Evening (5PM-9PM)</option>
+                        <option value="Night">🌙 Night (9PM-6AM)</option>
+                    </select>
+                </div>
+            </div>
             
-            <div id="category-box-divider" style="padding-bottom: 16px; border-bottom: 1px solid #dcdde1; transition: border-color 0.25s;">
+            <div id="category-box-divider" style="padding-bottom: 16px; border-bottom: 1px solid #dcdde1;">
                 <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">TRANSACTION CATEGORY</label>
                 <select id="category" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; color: #333;">
                     <option value="Food">FOOD 🍔</option>
@@ -85,23 +103,27 @@
                 </select>
             </div>
             
-            <button type="submit" id="form-submit-btn" style="background: #e74c3c; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; text-transform: uppercase;"> TRANSACTION</button>
+            <button type="submit" id="form-submit-btn" style="background: #e74c3c; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
         </form>
 
-        <button type="button" onclick="resetData()" style="margin-top: 10px; background: #7f8c8d; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 11px; letter-spacing: 0.5px;">RESET SYSTEM DATA</button>
+        <div style="margin-top: 20px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 10px; border: 1px solid rgba(0,0,0,0.05);">
+            <div style="font-size: 11px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">📊 12-Month Contribution Map</div>
+            <div id="year-contribution-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;">
+                </div>
+        </div>
+
+        <div style="margin-top: 15px; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 10px; border: 1px solid rgba(0,0,0,0.05);">
+            <div style="font-size: 11px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">⏰ Diurnal Money Burn Heat Map</div>
+            <div id="diurnal-heatmap-grid" style="display: flex; flex-direction: column; gap: 6px;">
+                </div>
+        </div>
     </div>
 
-    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.12); transition: right 0.25s ease, background 0.25s, border-color 0.25s; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #dcdde1;">
+    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.12); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #dcdde1;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1b12c; padding-bottom: 10px; margin-bottom: 12px;">
-            <h3 id="sidebar-title" style="margin: 0; font-size: 13px; font-weight: 700; color: inherit; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
+            <h3 id="sidebar-title" style="margin: 0; font-size: 12px; font-weight: 700; color: inherit; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
             <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #999;">✕</button>
         </div>
-
-        <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.04); border-radius: 6px;">
-            <div style="font-size: 9px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Weekly Burn Heat Map</div>
-            <div id="heatmap-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center;"></div>
-        </div>
-
         <div style="flex: 1; overflow-y: auto;">
             <ul id="list" style="list-style: none; padding: 0; margin: 0;"></ul>
         </div>
