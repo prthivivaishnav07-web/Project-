@@ -1,4 +1,4 @@
-// Target DOM Selectors
+// Global Application Target Layout DOM Elements
 const netWorthDisplay = document.getElementById('net-worth');
 const savingsRateDisplay = document.getElementById('savings-rate');
 const burnRateDisplay = document.getElementById('burn-rate');
@@ -28,7 +28,7 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Data Engine
+// Comprehensive Storage Schema Object 
 const database = {
   "ELECTRONICS ⚡": {
     "Mobiles 📱": {
@@ -42,7 +42,7 @@ const database = {
       "Dell": { "Inspiron 15": 54000 }
     }
   },
-  "FOOD & DINING 🍔": {
+  "SNACKS & FAST FOOD 🍔": {
     "Pizza Menu 🍕": {
       "Margherita Pizza": { "Small": 199, "Medium": 299, "Large": 449 },
       "Farmhouse Pizza": { "Small": 299, "Medium": 449, "Large": 649 }
@@ -83,7 +83,7 @@ const database = {
   }
 };
 
-// Clear any bad historic arrays from storage instantly
+// Initialization and Data Validation
 let rawTransactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 let transactions = rawTransactions.filter(t => t && typeof t.amount === 'number' && !isNaN(t.amount));
 localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
@@ -173,8 +173,8 @@ function updateButtonMode() {
     submitBtn.style.background = '#10b981';
     submitBtn.innerText = 'DEPOSIT FUNDS';
   } else {
-    submitBtn.style.background = '#ef4444';
-    submitBtn.innerText = 'SUBTRACT TRANSACTION';
+    submitBtn.style.background = '#3b82f6'; // Standard modern primary blue color token
+    submitBtn.innerText = 'TRANSACTION';
   }
 }
 
@@ -219,19 +219,20 @@ function renderYearlyMap() {
     }
   });
 
+  // Render contribution block with fully distinct colors
   monthsList.forEach((month, index) => {
     const spend = monthlySpend[index];
-    let cellBg = '#333333'; let textColor = '#aaaaaa';
+    let cellBg = '#1e293b'; let textColor = '#64748b';
     
     if (spend > 0 && spend <= 5000) { cellBg = '#064e3b'; textColor = '#34d399'; }
-    else if (spend > 5000 && spend <= 20000) { cellBg = '#047857'; textColor = '#a7f3d0'; }
-    else if (spend > 20000) { cellBg = '#10b981'; textColor = '#ffffff'; }
+    else if (spend > 5000 && spend <= 20000) { cellBg = '#0f766e'; textColor = '#2dd4bf'; }
+    else if (spend > 20000) { cellBg = '#2563eb'; textColor = '#ffffff'; }
 
     const monthBlock = document.createElement('div');
     monthBlock.style.background = cellBg; monthBlock.style.padding = '10px 4px';
-    monthBlock.style.borderRadius = '6px'; monthBlock.style.fontSize = '12px';
+    monthBlock.style.borderRadius = '8px'; monthBlock.style.fontSize = '12px';
     monthBlock.style.fontWeight = '600'; monthBlock.style.color = textColor;
-    monthBlock.style.border = '1px solid #444';
+    monthBlock.style.border = '1px solid #334155';
     monthBlock.innerHTML = `<div>${month}</div><div style="font-size:9.5px; font-weight:700; margin-top:4px;">₹${(spend/1000).toFixed(1)}k</div>`;
     yearGrid.appendChild(monthBlock);
   });
@@ -249,25 +250,26 @@ function renderDiurnalMap() {
     }
   });
 
+  // Map entries layout populated with distinct colored data nodes
   dayPeriods.forEach(period => {
     const amt = periodSpend[period];
-    let barColor = '#4b5563';
+    let barColor = '#475569';
     if (amt > 0 && amt <= 2000) barColor = '#f59e0b';
-    else if (amt > 2000 && amt <= 10000) barColor = '#ea580c';
-    else if (amt > 10000) barColor = '#dc2626';
+    else if (amt > 2000 && amt <= 10000) barColor = '#d97706';
+    else if (amt > 10000) barColor = '#ef4444';
 
     const blockRow = document.createElement('div');
     blockRow.style.display = 'flex'; blockRow.style.alignItems = 'center';
-    blockRow.style.justifyContent = 'space-between'; blockRow.style.backgroundColor = '#1e1e1e';
-    blockRow.style.padding = '10px 12px'; blockRow.style.borderRadius = '6px';
-    blockRow.style.fontSize = '12px'; blockRow.style.border = '1px solid #3d3d3d';
+    blockRow.style.justifyContent = 'space-between'; blockRow.style.backgroundColor = '#0f1115';
+    blockRow.style.padding = '10px 12px'; blockRow.style.borderRadius = '8px';
+    blockRow.style.fontSize = '12px'; blockRow.style.border = '1px solid #232d3d';
 
     blockRow.innerHTML = `
-      <div style="width: 85px; font-weight:600; color:#e0e0e0;">${period}</div>
-      <div style="flex:1; margin: 0 14px; background: #262626; height:8px; border-radius:4px; overflow:hidden; border: 1px solid #3d3d3d;">
+      <div style="width: 85px; font-weight:600; color:#cbd5e1;">${period}</div>
+      <div style="flex:1; margin: 0 14px; background: #1e293b; height:8px; border-radius:4px; overflow:hidden; border: 1px solid #334155;">
          <div style="width: ${Math.min(100, (amt/25000)*100)}%; background: ${barColor}; height:100%;"></div>
       </div>
-      <div style="font-weight:700; color:${amt > 0 ? barColor : '#888888'};">₹${amt.toFixed(0)}</div>`;
+      <div style="font-weight:700; color:${amt > 0 ? barColor : '#64748b'};">₹${amt.toFixed(0)}</div>`;
     diurnalGrid.appendChild(blockRow);
   });
 }
@@ -334,28 +336,28 @@ function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
   
-  let highlightColor = '#2563eb';
+  let highlightColor = '#3b82f6';
   if (t.mainCat === "Custom / Other Deposit 💰" || t.amount > 0) highlightColor = '#10b981';
-  else if (t.mainCat === "FOOD & DINING 🍔") highlightColor = '#eab308';
+  else if (t.mainCat === "SNACKS & FAST FOOD 🍔") highlightColor = '#f59e0b';
 
-  item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
-  item.style.backgroundColor = "#262626"; item.style.color = "#e0e0e0";
+  item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "8px";
+  item.style.backgroundColor = "#1e293b"; item.style.color = "#cbd5e1";
   item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
-  item.style.border = "1px solid #3d3d3d"; item.style.borderLeft = `6px solid ${highlightColor}`;
+  item.style.border = "1px solid #334155"; item.style.borderLeft = `6px solid ${highlightColor}`;
 
   item.innerHTML = `
     <div>
       <div style="font-weight:600; font-size:12px; color:#ffffff;">${t.text}</div>
-      <div style="font-size:10px; color:#888888; margin-top:2px;">${monthsList[t.month]} | ${t.period}</div>
+      <div style="font-size:10px; color:#94a3b8; margin-top:2px;">${monthsList[t.month]} | ${t.period}</div>
     </div>
     <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="color: ${isExpense ? '#ef4444' : '#10b981'}; font-weight: 700; font-size:12px;">${isExpense ? '-' : '+'}.₹${Math.abs(t.amount)}</span>
-      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
+      <span style="color: ${isExpense ? '#fb7185' : '#10b981'}; font-weight: 700; font-size:12px;">${isExpense ? '-' : '+'}.₹${Math.abs(t.amount)}</span>
+      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#f43f5e; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
     </div>`;
   list.appendChild(item);
 }
 
-// Event Listeners Linkages
+// Event Linkages
 mainCategory.addEventListener('change', handleMainCategoryChange);
 subCategory.addEventListener('change', populateBrands);
 itemBrand.addEventListener('change', populateModels);
@@ -363,6 +365,6 @@ itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
 form.addEventListener('submit', saveTransaction);
 
-// Launch Instance
+// Launch Instance Configuration
 handleMainCategoryChange();
 init();
