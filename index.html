@@ -2,69 +2,71 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEGOZI VAISHNAV - PRO DASHBOARD</title>
-    <link rel="stylesheet" href="style.css">
+    <title>NEGOZI VAISHNAV - STANDARD DASHBOARD</title>
 </head>
-<body style="margin: 0; padding: 15px 10px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #ffffff; color: #333; transition: all 0.3s ease;">
+<body style="margin: 0; padding: 15px 10px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f6fa; color: #333; transition: all 0.25s ease;">
     
-    <div class="container" id="app-container" style="max-width: 480px; margin: auto; padding: 20px; border-radius: 16px; box-sizing: border-box; background: #ffffff; transition: all 0.3s ease;">
+    <div class="container" id="app-container" style="max-width: 440px; margin: auto; padding: 20px; border-radius: 14px; box-sizing: border-box; background: #ffffff; border: 1px solid #dcdde1; box-shadow: 0 4px 10px rgba(0,0,0,0.04); transition: all 0.25s ease;">
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 0.5px;">🏬 NEGOZI VAISHNAV</h2>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <select id="theme-select" onchange="changeTheme()" style="padding: 6px 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 2px solid #e1b12c;">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.3px;">🏬 NEGOZI VAISHNAV</h2>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <select id="theme-select" onchange="changeTheme()" style="padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 11px; font-weight: 700; cursor: pointer; background: #fff;">
                     <option value="white">WHITE ⚪</option>
                     <option value="grey">GREY 🔘</option>
                     <option value="black">BLACK ⚫</option>
-                    <option value="blue">BLUE 🔵</option>
+                    <option value="pink">PINK 🌸</option>
+                    <option value="green">GREEN 🟢</option>
+                    <option value="purple">PURPLE 🔮</option>
+                    <option value="brown">BROWN 🪵</option>
                 </select>
-                <button type="button" onclick="toggleSidebar(true)" style="background: none; border: none; font-size: 22px; cursor: pointer; color: inherit; padding: 5px;">☰</button>
+                <button type="button" onclick="toggleSidebar(true)" style="background: none; border: none; font-size: 20px; cursor: pointer; color: inherit; padding: 2px 6px;">☰</button>
             </div>
         </div>
 
-        <div id="metrics-board" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+        <div id="metrics-board" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-bottom: 16px; border-bottom: 1px solid #dcdde1;">
             
-            <div style="grid-column: span 2; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; padding: 16px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(46,204,113,0.2);">
-                <div style="font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.9;">NET WORTH (TOTAL WALLET)</div>
-                <div style="font-size: 32px; font-weight: 800; margin-top: 4px;">$<span id="net-worth">10000.00</span></div>
+            <div style="grid-column: span 2; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; padding: 14px; border-radius: 10px; text-align: center; box-shadow: 0 3px 8px rgba(46,204,113,0.15);">
+                <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; opacity: 0.95;">NET WORTH (TOTAL WALLET)</div>
+                <div style="font-size: 28px; font-weight: 800; margin-top: 2px;">$<span id="net-worth">10000.00</span></div>
             </div>
 
-            <div style="background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #2980b9; letter-spacing: 0.5px; text-transform: uppercase;">Savings Rate</div>
-                <div id="savings-rate" style="font-size: 18px; font-weight: 700; margin-top: 4px; color: #2980b9;">100%</div>
+            <div style="background: rgba(52, 152, 219, 0.08); border: 1px solid rgba(52, 152, 219, 0.2); padding: 10px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 700; color: #2980b9; text-transform: uppercase;">Savings Rate</div>
+                <div id="savings-rate" style="font-size: 16px; font-weight: 700; margin-top: 2px; color: #2980b9;">100%</div>
             </div>
 
-            <div style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #c0392b; letter-spacing: 0.5px; text-transform: uppercase;">Daily Burn Rate</div>
-                <div id="burn-rate" style="font-size: 18px; font-weight: 700; margin-top: 4px; color: #c0392b;">$0.00/day</div>
+            <div style="background: rgba(231, 76, 60, 0.08); border: 1px solid rgba(231, 76, 60, 0.2); padding: 10px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 700; color: #c0392b; text-transform: uppercase;">Daily Burn Rate</div>
+                <div id="burn-rate" style="font-size: 16px; font-weight: 700; margin-top: 2px; color: #c0392b;">$0.00/day</div>
             </div>
 
-            <div style="background: rgba(155, 89, 182, 0.1); border: 1px solid rgba(155, 89, 182, 0.2); padding: 12px; border-radius: 10px;">
-                <div style="font-size: 10px; font-weight: 700; color: #8e44ad; letter-spacing: 0.5px; text-transform: uppercase; text-align: center;">Monthly Income</div>
-                <div id="monthly-income" style="font-size: 16px; font-weight: 700; margin-top: 4px; text-align: center; color: #8e44ad;">$0.00</div>
-                <div id="tax-breakdown" style="font-size: 9px; text-align: center; color: #7f8c8d; margin-top: 2px; font-weight: 600;">Incl. 0% Tax/GST</div>
+            <div style="background: rgba(155, 89, 182, 0.08); border: 1px solid rgba(155, 89, 182, 0.2); padding: 10px; border-radius: 8px;">
+                <div style="font-size: 10px; font-weight: 700; color: #8e44ad; text-transform: uppercase; text-align: center;">Monthly Income</div>
+                <div id="monthly-income" style="font-size: 15px; font-weight: 700; margin-top: 2px; text-align: center; color: #8e44ad;">$0.00</div>
+                <div id="tax-breakdown" style="font-size: 8.5px; text-align: center; color: #7f8c8d; margin-top: 1px; font-weight: 600;">Incl. 0% Tax/GST</div>
             </div>
 
-            <div style="background: rgba(230, 126, 34, 0.1); border: 1px solid rgba(230, 126, 34, 0.2); padding: 12px; border-radius: 10px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #d35400; letter-spacing: 0.5px; text-transform: uppercase;">Weekly Payments</div>
-                <div id="weekly-payments" style="font-size: 16px; font-weight: 700; margin-top: 4px; color: #d35400;">$0.00</div>
+            <div style="background: rgba(230, 126, 34, 0.08); border: 1px solid rgba(230, 126, 34, 0.2); padding: 10px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 700; color: #d35400; text-transform: uppercase;">Weekly Payments</div>
+                <div id="weekly-payments" style="font-size: 15px; font-weight: 700; margin-top: 2px; color: #d35400;">$0.00</div>
             </div>
         </div>
 
-        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 14px;">
+        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
             <div>
-                <label style="font-weight: 700; font-size: 12px; display: block; margin-bottom: 4px;">ITEM DESCRIPTION</label>
-                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger, Salary" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box;" required>
+                <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">ITEM DESCRIPTION</label>
+                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger, Salary" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box;" required>
             </div>
             
-            <div style="display: flex; gap: 12px; width: 100%;">
+            <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
-                    <label style="font-weight: 700; font-size: 12px; display: block; margin-bottom: 4px;">PRICE / VALUE</label>
-                    <input type="text" id="amount" placeholder="Price" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box;" required>
+                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">PRICE / VALUE</label>
+                    <input type="text" id="amount" placeholder="Price" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box;" required>
                 </div>
-                <div style="width: 120px;">
-                    <label style="font-weight: 700; font-size: 12px; display: block; margin-bottom: 4px;">SIZE VARIANT</label>
-                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 11px 6px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; background-color: #fff; font-weight: 600; cursor: pointer;">
+                <div style="width: 110px;">
+                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">SIZE VARIANT</label>
+                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 10px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; cursor: pointer;">
                         <option value="SMALL">SMALL 🟢</option>
                         <option value="MEDIUM" selected>MEDIUM 🟡</option>
                         <option value="LARGE">LARGE 🔴</option>
@@ -72,9 +74,9 @@
                 </div>
             </div>
             
-            <div>
-                <label style="font-weight: 700; font-size: 12px; display: block; margin-bottom: 4px;">TRANSACTION CATEGORY</label>
-                <select id="category" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; box-sizing: border-box; background-color: #fff; font-weight: 600;">
+            <div style="padding-bottom: 16px; border-bottom: 1px solid #dcdde1;">
+                <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">TRANSACTION CATEGORY</label>
+                <select id="category" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600;">
                     <option value="Food">FOOD 🍔</option>
                     <option value="Clothes">CLOTHES 👑</option>
                     <option value="Electronics">ELECTRONICS ⚡</option>
@@ -83,20 +85,20 @@
                 </select>
             </div>
             
-            <button type="submit" id="form-submit-btn" style="background: #e74c3c; width: 100%; height: 45px; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s; color: white; font-weight: 700; font-size: 14px; margin-top: 4px;">SUBTRACT TRANSACTION</button>
+            <button type="submit" id="form-submit-btn" style="background: #e74c3c; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
         </form>
 
-        <button type="button" onclick="resetData()" style="margin-top: 14px; background: #7f8c8d; color: white; border: none; padding: 11px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">RESET SYSTEM DATA</button>
+        <button type="button" onclick="resetData()" style="margin-top: 10px; background: #7f8c8d; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 11px; letter-spacing: 0.5px;">RESET SYSTEM DATA</button>
     </div>
 
-    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.15); transition: right 0.3s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 12px;">
-            <h3 id="sidebar-title" style="margin: 0; font-size: 14px; font-weight: 700; color: #333;">VERIFIED LOG HISTORY</h3>
+    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.12); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #dcdde1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1b12c; padding-bottom: 10px; margin-bottom: 12px;">
+            <h3 id="sidebar-title" style="margin: 0; font-size: 13px; font-weight: 700; color: #333; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
             <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #999;">✕</button>
         </div>
 
-        <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-            <div style="font-size: 10px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; color: #555;">Weekly Burn Heat Map</div>
+        <div style="margin-bottom: 15px; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 6px; border: 1px solid #dcdde1;">
+            <div style="font-size: 9px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; color: #555; letter-spacing: 0.3px;">Weekly Burn Heat Map</div>
             <div id="heatmap-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center;"></div>
         </div>
 
