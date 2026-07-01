@@ -1,3 +1,4 @@
+// DOM Element selections
 const netWorthDisplay = document.getElementById('net-worth');
 const savingsRateDisplay = document.getElementById('savings-rate');
 const burnRateDisplay = document.getElementById('burn-rate');
@@ -12,11 +13,16 @@ const amount = document.getElementById('amount');
 const category = document.getElementById('category');
 const itemSize = document.getElementById('item-size');
 const submitBtn = document.getElementById('form-submit-btn');
+
+const bodyBg = document.getElementById('body-bg');
 const appContainer = document.getElementById('app-container');
 const themeSelect = document.getElementById('theme-select');
 const sidebar = document.getElementById('history-sidebar');
 const sidebarTitle = document.getElementById('sidebar-title');
 const heatmapGrid = document.getElementById('heatmap-grid');
+
+const metricsBoard = document.getElementById('metrics-board');
+const categoryDivider = document.getElementById('category-box-divider');
 
 const categoryColors = { 'Clothes': '#9b59b6', 'Food': '#e67e22', 'Electronics': '#3498db', 'Salary': '#2ecc71', 'General': '#7f8c8d' };
 const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -30,10 +36,23 @@ const menuPrices = {
   'PERI PERI': { 'SMALL': 99, 'MEDIUM': 99, 'LARGE': 99 }
 };
 
+// State trackers
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let currentTheme = localStorage.getItem('siteTheme') || 'white';
 
+// Solid clean definitions for all background settings
+const themeMap = {
+  white:  { body: '#f5f6fa', card: '#ffffff', txt: '#333333', line: '#dcdde1' },
+  grey:   { body: '#7f8c8d', card: '#b2bec3', txt: '#2d3436', line: '#444444' },
+  black:  { body: '#111111', card: '#222222', txt: '#ffffff', line: '#444444' },
+  pink:   { body: '#fff0f6', card: '#ffdeeb', txt: '#a61e4d', line: '#f783ac' },
+  green:  { body: '#e6fcf5', card: '#c3fae8', txt: '#0ca678', line: '#20c997' },
+  purple: { body: '#f3f0ff', card: '#e5dbff', txt: '#5f3dc4', line: '#845ef7' },
+  brown:  { body: '#fdf8f5', card: '#f4eae1', txt: '#4e342e', line: '#8d6e63' }
+};
+
 function autoUpdatePrice() {
+  if (!text || !amount || !category || !itemSize) return;
   const inputName = text.value.trim().toUpperCase();
   const selectedSize = itemSize.value;
   let matchedKey = null;
@@ -53,6 +72,7 @@ function autoUpdatePrice() {
 }
 
 function updateButtonMode(catValue) {
+  if (!submitBtn) return;
   if (catValue === 'Salary') {
     submitBtn.style.background = '#2ecc71';
     submitBtn.innerText = 'DEPOSIT FUNDS';
@@ -62,55 +82,47 @@ function updateButtonMode(catValue) {
   }
 }
 
-if(category) {
+if (category) {
   category.onchange = () => updateButtonMode(category.value);
 }
 
 function toggleSidebar(open) {
+  if (!sidebar) return;
   sidebar.style.right = open ? '0px' : '-320px';
   if (open) renderHeatMap();
 }
 
-function changeTheme() {
-  currentTheme = themeSelect.value;
-  localStorage.setItem('siteTheme', currentTheme);
-  applyThemeStyles();
+function applyThemeStyles() {
+  const config = themeMap[currentTheme] || themeMap.white;
+  
+  if (themeSelect) themeSelect.value = currentTheme;
+  if (bodyBg) bodyBg.style.backgroundColor = config.body;
+  
+  if (appContainer) {
+    appContainer.style.backgroundColor = config.card;
+    appContainer.style.color = config.txt;
+    appContainer.style.borderColor = config.line;
+  }
+  
+  if (sidebar) {
+    sidebar.style.backgroundColor = config.card;
+    sidebar.style.color = config.txt;
+    sidebar.style.borderColor = config.line;
+  }
+  
+  if (sidebarTitle) sidebarTitle.style.color = config.txt;
+  if (metricsBoard) metricsBoard.style.borderColor = config.line;
+  if (categoryDivider) categoryDivider.style.borderColor = config.line;
+
+  init();
 }
 
-function applyThemeStyles() {
-  if (!themeSelect || !appContainer || !sidebar || !sidebarTitle) return;
-  
-  themeSelect.value = currentTheme;
-  
-  let lightLine = '#dcdde1';
-  let darkLine = '#444444';
-  
-  let mBoard = document.getElementById('metrics-board');
-  let cBox = document.getElementById('category-box-divider');
-
-  if (currentTheme === 'white') {
-    document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#ffffff'; appContainer.style.color = '#333333'; sidebar.style.background = '#ffffff'; sidebarTitle.style.color = '#333333'; sidebar.style.borderColor = lightLine; appContainer.style.borderColor = lightLine;
-    if(mBoard) mBoard.style.borderColor = lightLine; if(cBox) cBox.style.borderColor = lightLine;
-  } else if (currentTheme === 'grey') {
-    document.body.style.backgroundColor = '#7f8c8d'; appContainer.style.backgroundColor = '#b2bec3'; appContainer.style.color = '#2d3436'; sidebar.style.background = '#b2bec3'; sidebarTitle.style.color = '#2d3436'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
-    if(mBoard) mBoard.style.borderColor = darkLine; if(cBox) cBox.style.borderColor = darkLine;
-  } else if (currentTheme === 'black') {
-    document.body.style.backgroundColor = '#111111'; appContainer.style.backgroundColor = '#222222'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#222222'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
-    if(mBoard) mBoard.style.borderColor = darkLine; if(cBox) cBox.style.borderColor = darkLine;
-  } else if (currentTheme === 'pink') {
-    document.body.style.backgroundColor = '#fff0f6'; appContainer.style.backgroundColor = '#ffdeeb'; appContainer.style.color = '#a61e4d'; sidebar.style.background = '#ffdeeb'; sidebarTitle.style.color = '#a61e4d'; sidebar.style.borderColor = '#f783ac'; appContainer.style.borderColor = '#f783ac';
-    if(mBoard) mBoard.style.borderColor = '#f783ac'; if(cBox) cBox.style.borderColor = '#f783ac';
-  } else if (currentTheme === 'green') {
-    document.body.style.backgroundColor = '#e6fcf5'; appContainer.style.backgroundColor = '#c3fae8'; appContainer.style.color = '#0ca678'; sidebar.style.background = '#c3fae8'; sidebarTitle.style.color = '#0ca678'; sidebar.style.borderColor = '#20c997'; appContainer.style.borderColor = '#20c997';
-    if(mBoard) mBoard.style.borderColor = '#20c997'; if(cBox) cBox.style.borderColor = '#20c997';
-  } else if (currentTheme === 'purple') {
-    document.body.style.backgroundColor = '#f3f0ff'; appContainer.style.backgroundColor = '#e5dbff'; appContainer.style.color = '#5f3dc4'; sidebar.style.background = '#e5dbff'; sidebarTitle.style.color = '#5f3dc4'; sidebar.style.borderColor = '#845ef7'; appContainer.style.borderColor = '#845ef7';
-    if(mBoard) mBoard.style.borderColor = '#845ef7'; if(cBox) cBox.style.borderColor = '#845ef7';
-  } else if (currentTheme === 'brown') {
-    document.body.style.backgroundColor = '#fdf8f5'; appContainer.style.backgroundColor = '#f4eae1'; appContainer.style.color = '#4e342e'; sidebar.style.background = '#f4eae1'; sidebarTitle.style.color = '#4e342e'; sidebar.style.borderColor = '#8d6e63'; appContainer.style.borderColor = '#8d6e63';
-    if(mBoard) mBoard.style.borderColor = '#8d6e63'; if(cBox) cBox.style.borderColor = '#8d6e63';
-  }
-  init();
+if (themeSelect) {
+  themeSelect.addEventListener('change', (e) => {
+    currentTheme = e.target.value;
+    localStorage.setItem('siteTheme', currentTheme);
+    applyThemeStyles();
+  });
 }
 
 function recalculateDashboardMetrics() {
@@ -193,7 +205,7 @@ function saveTransaction(e) {
 
   const itemLabelText = text.value.toUpperCase();
   let cleanItemName = itemLabelText;
-  if (category.value === 'Food') cleanItemName = `${itemLabelText} (${itemSize.value})`;
+  if (category.value === 'Food' && itemSize) cleanItemName = `${itemLabelText} (${itemSize.value})`;
 
   transactions.push({ id: Date.now(), text: cleanItemName, amount: finalAmount, cat: category.value, timestamp: Date.now() });
   init(); updateLocalStorage();
@@ -217,8 +229,10 @@ function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
   const isDark = ['black'].includes(currentTheme);
+  
   item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
-  item.style.background = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.03)"; item.style.color = isDark ? "#ffffff" : "#333333";
+  item.style.background = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.03)"; 
+  item.style.color = "inherit";
   item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
   item.style.borderLeft = `5px solid ${categoryColors[t.cat] || '#7f8c8d'}`;
 
@@ -234,4 +248,5 @@ function addTransactionDOM(t) {
 if (form) {
   form.addEventListener('submit', saveTransaction);
 }
+
 applyThemeStyles();
