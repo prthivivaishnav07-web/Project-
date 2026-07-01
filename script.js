@@ -78,6 +78,8 @@ function changeTheme() {
 }
 
 function applyThemeStyles() {
+  if (!themeSelect || !appContainer || !sidebar || !sidebarTitle) return;
+  
   themeSelect.value = currentTheme;
   
   let lightLine = '#dcdde1';
@@ -112,6 +114,7 @@ function applyThemeStyles() {
 }
 
 function recalculateDashboardMetrics() {
+  if (!netWorthDisplay) return;
   const startingBalance = 10000;
   let totalDeposits = 0;
   let totalExpenses = 0;
@@ -136,24 +139,25 @@ function recalculateDashboardMetrics() {
 
   const overallIncomePool = startingBalance + totalDeposits;
   const savingsRate = overallIncomePool > 0 ? ((netWorth / overallIncomePool) * 100) : 0;
-  savingsRateDisplay.innerText = `${Math.max(0, Math.min(100, savingsRate)).toFixed(0)}%`;
+  if (savingsRateDisplay) savingsRateDisplay.innerText = `${Math.max(0, Math.min(100, savingsRate)).toFixed(0)}%`;
 
   const totalDaysActive = Math.max(1, Math.ceil((now - firstTransactionTime) / (1000 * 60 * 60 * 24)));
   const burnRate = totalExpenses / totalDaysActive;
-  burnRateDisplay.innerText = `$${burnRate.toFixed(2)}/day`;
+  if (burnRateDisplay) burnRateDisplay.innerText = `$${burnRate.toFixed(2)}/day`;
 
   const grossMonthlyIncome = totalDeposits; 
   const gstDeduction = grossMonthlyIncome * 0.18;
   const taxDeduction = grossMonthlyIncome * 0.10;
   const netMonthlyIncome = grossMonthlyIncome - gstDeduction - taxDeduction;
 
-  monthlyIncomeDisplay.innerText = `$${grossMonthlyIncome.toFixed(2)}`;
-  taxBreakdownDisplay.innerText = `Take-home: $${netMonthlyIncome.toFixed(2)} (-18% GST, -10% Tax)`;
+  if (monthlyIncomeDisplay) monthlyIncomeDisplay.innerText = `$${grossMonthlyIncome.toFixed(2)}`;
+  if (taxBreakdownDisplay) taxBreakdownDisplay.innerText = `Take-home: $${netMonthlyIncome.toFixed(2)} (-18% GST, -10% Tax)`;
 
-  weeklyPaymentsDisplay.innerText = `$${weeklyExpenseSum.toFixed(2)}`;
+  if (weeklyPaymentsDisplay) weeklyPaymentsDisplay.innerText = `$${weeklyExpenseSum.toFixed(2)}`;
 }
 
 function renderHeatMap() {
+  if (!heatmapGrid) return;
   heatmapGrid.innerHTML = '';
   let weeklySpend = [0, 0, 0, 0, 0, 0, 0];
   transactions.forEach(t => { if (t.amount < 0) { const date = new Date(t.timestamp || Date.now()); weeklySpend[date.getDay()] += Math.abs(t.amount); } });
@@ -202,13 +206,14 @@ function resetData() { if (confirm("RESET ALL ACCOUNT DATA?")) { transactions = 
 function updateLocalStorage() { localStorage.setItem('transactions', JSON.stringify(transactions)); }
 
 function init() {
-  list.innerHTML = '';
+  if (list) list.innerHTML = '';
   transactions.forEach(addTransactionDOM);
   recalculateDashboardMetrics();
   renderHeatMap();
 }
 
 function addTransactionDOM(t) {
+  if (!list) return;
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
   const isDark = ['black'].includes(currentTheme);
@@ -226,5 +231,7 @@ function addTransactionDOM(t) {
   list.appendChild(item);
 }
 
-form.addEventListener('submit', saveTransaction);
+if (form) {
+  form.addEventListener('submit', saveTransaction);
+}
 applyThemeStyles();
