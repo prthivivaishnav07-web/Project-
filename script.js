@@ -1,4 +1,4 @@
-// DOM Element Nodes
+// Target DOM Selectors
 const netWorthDisplay = document.getElementById('net-worth');
 const savingsRateDisplay = document.getElementById('savings-rate');
 const burnRateDisplay = document.getElementById('burn-rate');
@@ -15,9 +15,6 @@ const category = document.getElementById('category');
 const subCategoryContainer = document.getElementById('sub-category-container');
 const brandContainer = document.getElementById('brand-container');
 const modelContainer = document.getElementById('model-container');
-const subCategoryLabel = document.getElementById('sub-category-label');
-const brandLabel = document.getElementById('brand-label');
-const modelLabel = document.getElementById('model-label');
 const customTextContainer = document.getElementById('custom-text-container');
 const customDesc = document.getElementById('custom-desc');
 
@@ -31,83 +28,68 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Clean Database Matrix - Totally Emoji-Safe 
+// Database Matrix Map with Literal String Emojis Included
 const database = {
-  "ELECTRONICS": {
-    "Mobiles": {
+  "ELECTRONICS ⚡": {
+    "Mobiles 📱": {
       "Apple": { "iPhone 14": 54900, "iPhone 15": 68900, "iPhone 16": 79900 },
       "Samsung": { "Galaxy S24": 74999, "Galaxy S25": 82300 },
       "OPPO": { "A3 Pro 5G": 17999, "Reno 12": 32500 }
     },
-    "Laptops": {
+    "Laptops 💻": {
       "Apple": { "MacBook Air M2": 84400, "MacBook Air M3": 104900 },
       "HP": { "Victus 15": 62000, "Pavilion 14": 68500 },
       "Dell": { "Inspiron 15": 54000 }
     }
   },
-  "FOOD & DINING": {
-    "Pizza Menu": {
+  "FOOD & DINING 🍔": {
+    "Pizza Menu 🍕": {
       "Margherita Pizza": { "Small": 199, "Medium": 299, "Large": 449 },
       "Farmhouse Pizza": { "Small": 299, "Medium": 449, "Large": 649 }
     },
-    "Burgers Menu": {
+    "Burgers Menu 🍔": {
       "Crispy Veg Burger": { "Standard": 129 },
       "Cheese Burger": { "Standard": 159 },
       "Chicken Maharaja": { "Standard": 299 }
     },
-    "Wraps & Rolls": {
+    "Wraps & Rolls 🌯": {
       "Veg Kathi Roll": { "Standard": 120 },
       "Chicken Tikka Wrap": { "Standard": 180 }
     },
-    "Sandwiches": {
+    "Sandwiches 🥪": {
       "Club Sandwich": { "Standard": 140 },
       "Grilled Cheese": { "Standard": 110 }
     },
-    "Fries & Sides": {
+    "Fries & Sides 🍟": {
       "Classic Fries": { "Regular": 99, "Large": 149 },
       "Garlic Breadsticks": { "Standard": 139 }
     },
-    "Momos": {
+    "Momos 🥟": {
       "Steamed Veg Momos": { "Standard": 100 },
       "Fried Chicken Momos": { "Standard": 140 }
     },
-    "Chinese": {
+    "Chinese 🥢": {
       "Veg Hakka Noodles": { "Standard": 160 },
       "Manchurian Gravy": { "Standard": 180 }
     },
-    "Beverages": {
+    "Beverages 🥤": {
       "Cold Coffee": { "Standard": 90 },
       "Fresh Lime Soda": { "Standard": 60 }
     },
-    "KFC Menu": {
+    "KFC Menu 🍗": {
       "Chicken Bucket (4pc)": { "Standard": 449 },
       "Zinger Burger": { "Standard": 219 }
     }
   }
 };
 
-// Safe Key extraction text patterns
-function getCleanMainKey(val) {
-  if (!val) return "CUSTOM";
-  const upper = val.toUpperCase();
-  if (upper.includes("ELECTRONICS")) return "ELECTRONICS";
-  if (upper.includes("FOOD")) return "FOOD & DINING";
-  return "CUSTOM";
-}
-
-function getCleanSubKey(val) {
-  if (!val) return "";
-  // Removes all emoji icons and extra empty blank trailing spaces
-  return val.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, '').trim();
-}
-
 let transactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 
 function handleMainCategoryChange() {
-  const cleanMain = getCleanMainKey(mainCategory.value);
+  const selectedMain = mainCategory.value;
 
-  if (cleanMain === "CUSTOM") {
-    subCategoryContainer.style.display = 'none';
+  if (selectedMain === "Custom / Other Deposit 💰" || !database[selectedMain]) {
+    subCategoryContainer.style.style.display = 'none';
     brandContainer.style.display = 'none';
     modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block';
@@ -116,52 +98,38 @@ function handleMainCategoryChange() {
   } else {
     subCategoryContainer.style.display = 'block';
     brandContainer.style.display = 'block';
+    modelContainer.style.display = 'block';
     customTextContainer.style.display = 'none';
     category.value = 'Expense';
-
-    if (cleanMain === 'ELECTRONICS') {
-      subCategoryLabel.innerText = "ELECTRONIC ITEM TYPE";
-      brandLabel.innerText = "BRAND NAME";
-      modelLabel.innerText = "MODEL DESCRIPTION";
-    } else {
-      subCategoryLabel.innerText = "ITEM TYPE GROUP";
-      brandLabel.innerText = "BRAND / SPECIFIC PRODUCT";
-      modelLabel.innerText = "MODEL VARIANT / SIZE";
-    }
     populateSubCategories();
   }
   updateButtonMode();
 }
 
 function populateSubCategories() {
-  const cleanMain = getCleanMainKey(mainCategory.value);
-  if (!database[cleanMain]) return;
-
+  const selectedMain = mainCategory.value;
   subCategory.innerHTML = '';
-  // Raw data display definitions
-  const rawSubs = {
-    "ELECTRONICS": ["Mobiles 📱", "Laptops 💻"],
-    "FOOD & DINING": ["Pizza Menu 🍕", "Burgers Menu 🍔", "Wraps & Rolls 🌯", "Sandwiches 🥪", "Fries & Sides 🍟", "Momos 🥟", "Chinese 🥢", "Beverages 🥤", "KFC Menu 🍗"]
-  };
+  
+  if (!database[selectedMain]) return;
 
-  const currentSubs = rawSubs[cleanMain] || [];
-  currentSubs.forEach(sub => {
+  const groups = Object.keys(database[selectedMain]);
+  groups.forEach(group => {
     let opt = document.createElement('option');
-    opt.value = sub;
-    opt.innerText = sub;
+    opt.value = group;
+    opt.innerText = group;
     subCategory.appendChild(opt);
   });
   populateBrands();
 }
 
 function populateBrands() {
-  const cleanMain = getCleanMainKey(mainCategory.value);
-  const cleanSub = getCleanSubKey(subCategory.value);
-  if (!database[cleanMain]?.[cleanSub]) return;
-
+  const selectedMain = mainCategory.value;
+  const selectedSub = subCategory.value;
   itemBrand.innerHTML = '';
-  const brands = Object.keys(database[cleanMain][cleanSub]);
 
+  if (!database[selectedMain] || !database[selectedMain][selectedSub]) return;
+
+  const brands = Object.keys(database[selectedMain][selectedSub]);
   brands.forEach(brand => {
     let opt = document.createElement('option');
     opt.value = brand;
@@ -172,14 +140,15 @@ function populateBrands() {
 }
 
 function populateModels() {
-  const cleanMain = getCleanMainKey(mainCategory.value);
-  const cleanSub = getCleanSubKey(subCategory.value);
+  const selectedMain = mainCategory.value;
+  const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
-  if (!database[cleanMain]?.[cleanSub]?.[selectedBrand]) return;
-
   itemModel.innerHTML = '';
-  const models = Object.keys(database[cleanMain][cleanSub][selectedBrand]);
 
+  if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[selectedMain][selectedSub][selectedBrand]) return;
+
+  const models = Object.keys(database[selectedMain][selectedSub][selectedBrand]);
+  
   if (models.length === 1 && models[0] === 'Standard') {
     modelContainer.style.display = 'none';
   } else {
@@ -196,13 +165,13 @@ function populateModels() {
 }
 
 function autoUpdatePrice() {
-  const cleanMain = getCleanMainKey(mainCategory.value);
-  const cleanSub = getCleanSubKey(subCategory.value);
+  const selectedMain = mainCategory.value;
+  const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
   const selectedModel = itemModel.value;
 
-  if (database[cleanMain]?.[cleanSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
-    amount.value = database[cleanMain][cleanSub][selectedBrand][selectedModel];
+  if (database[selectedMain]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
+    amount.value = database[selectedMain][selectedSub][selectedBrand][selectedModel];
   }
 }
 
@@ -311,9 +280,9 @@ function saveTransaction(e) {
 
   let finalAmount = category.value !== 'Salary' ? -Math.abs(parsedAmount) : Math.abs(parsedAmount);
   let displayTitle = '';
-  const cleanMain = getCleanMainKey(mainCategory.value);
+  const selectedMain = mainCategory.value;
 
-  if (cleanMain === "CUSTOM") {
+  if (selectedMain === "Custom / Other Deposit 💰") {
     displayTitle = customDesc.value.trim() || 'CUSTOM TRANSACTION';
   } else {
     const sizeVal = itemModel.value;
@@ -328,7 +297,7 @@ function saveTransaction(e) {
     id: Date.now(),
     text: displayTitle.toUpperCase(),
     amount: finalAmount,
-    mainCat: mainCategory.value,
+    mainCat: selectedMain,
     month: parseInt(timelineMonth.value),
     period: timelinePeriod.value
   });
@@ -345,13 +314,14 @@ function removeTransaction(id) {
 }
 
 function resetData() {
-  if (confirm("Clear timeline history?")) {
+  if (confirm("Clear wallet timeline history?")) {
     transactions = [];
     updateLocalStorage();
     init();
   }
 }
 
+// State Initializers
 function updateLocalStorage() {
   localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
 }
@@ -362,43 +332,3 @@ function init() {
   recalculateDashboardMetrics();
   renderYearlyMap();
   renderDiurnalMap();
-}
-
-function addTransactionDOM(t) {
-  if (!list) return;
-  const item = document.createElement('li');
-  const isExpense = t.amount < 0;
-  const cleanMain = getCleanMainKey(t.mainCat);
-  
-  let highlightColor = '#2563eb';
-  if (cleanMain === "CUSTOM" || t.amount > 0) highlightColor = '#10b981';
-  else if (cleanMain === "FOOD & DINING") highlightColor = '#eab308';
-
-  item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
-  item.style.backgroundColor = "#262626"; item.style.color = "#e0e0e0";
-  item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
-  item.style.border = "1px solid #3d3d3d"; item.style.borderLeft = `6px solid ${highlightColor}`;
-
-  item.innerHTML = `
-    <div>
-      <div style="font-weight:600; font-size:12px; color:#ffffff;">${t.text}</div>
-      <div style="font-size:10px; color:#888888; margin-top:2px;">${monthsList[t.month]} | ${t.period}</div>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <span style="color: ${isExpense ? '#ef4444' : '#10b981'}; font-weight: 700; font-size:12px;">${isExpense ? '-' : '+'}.₹${Math.abs(t.amount)}</span>
-      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
-    </div>`;
-  list.appendChild(item);
-}
-
-// Event Listeners Flow
-mainCategory.addEventListener('change', handleMainCategoryChange);
-subCategory.addEventListener('change', populateBrands);
-itemBrand.addEventListener('change', populateModels);
-itemModel.addEventListener('change', autoUpdatePrice);
-category.addEventListener('change', updateButtonMode);
-form.addEventListener('submit', saveTransaction);
-
-// Initial App Execution
-handleMainCategoryChange();
-init();
