@@ -9,7 +9,6 @@
     
     <div class="container" id="app-container" style="max-width: 480px; margin: auto; padding: 20px; border-radius: 12px; box-sizing: border-box; background: #1e1e1e; border: 1px solid #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         
-        <!-- Header Controls Panel -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #2d2d2d;">
             <h2 style="margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; color: #ffffff;">FINANCIAL TIMELINE</h2>
             <div style="display: flex; gap: 8px;">
@@ -18,7 +17,6 @@
             </div>
         </div>
 
-        <!-- Dashboard Performance Metrics Summary Grid -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
             <div style="grid-column: span 2; background: #10b981; color: white; padding: 14px; border-radius: 8px; text-align: center;">
                 <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9;">NET WORTH (TOTAL WALLET)</div>
@@ -36,49 +34,40 @@
             </div>
         </div>
 
-        <!-- System Submission Transaction Form Framework -->
         <form id="tracker-form" style="display: flex; flex-direction: column; gap: 14px; margin-top: 20px;">
             
-            <!-- Category Item Select Mapping Field -->
             <div>
-                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">ITEM TYPE GROUP</label>
-                <select id="item-type" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
-                    <option value="Mobiles">Mobiles 📱</option>
-                    <option value="Laptops">Laptops 💻</option>
-                    <option value="Pizza">Pizza Menu 🍕</option>
-                    <option value="Burgers">Burgers Menu 🍔</option>
-                    <option value="Wraps">Wraps & Rolls 🌯</option>
-                    <option value="Sandwiches">Sandwiches 🥪</option>
-                    <option value="Sides">Fries & Sides 🍟</option>
-                    <option value="Momos">Momos 🥟</option>
-                    <option value="Chinese">Chinese 🥢</option>
-                    <option value="Beverages">Beverages 🥤</option>
-                    <option value="KFC">KFC Menu 🍗</option>
-                    <option value="Custom">Custom / Other Deposit 💰</option>
+                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">MAIN MANAGEMENT TYPE</label>
+                <select id="main-category" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
+                    <option value="Electronics">ELECTRONICS ⚡</option>
+                    <option value="Food">FOOD & DINING 🍔</option>
+                    <option value="Custom">CUSTOM DEPOSIT / OTHER 💰</option>
                 </select>
             </div>
 
-            <!-- Dynamic Brand Layout / Food Item Block Component -->
+            <div id="sub-category-container">
+                <label id="sub-category-label" style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">ITEM TYPE GROUP</label>
+                <select id="sub-category" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
+                </select>
+            </div>
+
             <div id="brand-container">
-                <label id="brand-label" style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">BRAND NAME</label>
+                <label id="brand-label" style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">BRAND / SPECIFIC PRODUCT</label>
                 <select id="item-brand" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
                 </select>
             </div>
 
-            <!-- Dynamic Model Layout / Size / Portion Block Component -->
             <div id="model-container">
-                <label id="model-label" style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">MODEL DESCRIPTION</label>
+                <label id="model-label" style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">MODEL VARIANT / SIZE</label>
                 <select id="item-model" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
                 </select>
             </div>
 
-            <!-- Dynamic Alternative Custom Entry Area Block Component -->
             <div id="custom-text-container" style="display: none;">
                 <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">CUSTOM DESCRIPTION / NOTES</label>
-                <input type="text" id="custom-desc" placeholder="e.g., Pizza, Shop Allowance, Internet Bill" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;">
+                <input type="text" id="custom-desc" placeholder="e.g., Pocket Allowance, Store Sales, Internet Bill" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;">
             </div>
             
-            <!-- Pricing Metrics Action Core Blocks -->
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">PRICE / VALUE (₹)</label>
@@ -93,7 +82,6 @@
                 </div>
             </div>
 
-            <!-- Calendar Context Inputs System -->
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">TIMELINE MONTH</label>
@@ -124,11 +112,9 @@
             </div>
             
             <div style="padding-bottom: 4px;"></div>
-            
             <button type="submit" id="form-submit-btn" style="background: #ef4444; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
         </form>
 
-        <!-- Analytical Matrix Visualization Sections -->
         <div style="margin-top: 24px; padding: 14px; background: #262626; border-radius: 8px; border: 1px solid #3d3d3d;">
             <div style="font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">12-Month Contribution Map</div>
             <div id="year-contribution-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;"></div>
@@ -140,7 +126,6 @@
         </div>
     </div>
 
-    <!-- Right Slide Drawer Panel -->
     <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #1e1e1e; box-shadow: -4px 0 15px rgba(0,0,0,0.5); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #3d3d3d;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3d3d3d; padding-bottom: 10px; margin-bottom: 12px;">
             <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
