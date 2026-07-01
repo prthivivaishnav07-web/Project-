@@ -89,7 +89,7 @@ function handleMainCategoryChange() {
   const selectedMain = mainCategory.value;
 
   if (selectedMain === "Custom / Other Deposit 💰" || !database[selectedMain]) {
-    subCategoryContainer.style.style.display = 'none';
+    subCategoryContainer.style.display = 'none';
     brandContainer.style.display = 'none';
     modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block';
@@ -313,6 +313,7 @@ function removeTransaction(id) {
   init();
 }
 
+// Clear Wallet History Area
 function resetData() {
   if (confirm("Clear wallet timeline history?")) {
     transactions = [];
@@ -321,7 +322,6 @@ function resetData() {
   }
 }
 
-// State Initializers
 function updateLocalStorage() {
   localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
 }
@@ -332,3 +332,42 @@ function init() {
   recalculateDashboardMetrics();
   renderYearlyMap();
   renderDiurnalMap();
+}
+
+function addTransactionDOM(t) {
+  if (!list) return;
+  const item = document.createElement('li');
+  const isExpense = t.amount < 0;
+  
+  let highlightColor = '#2563eb';
+  if (t.mainCat === "Custom / Other Deposit 💰" || t.amount > 0) highlightColor = '#10b981';
+  else if (t.mainCat === "FOOD & DINING 🍔") highlightColor = '#eab308';
+
+  item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
+  item.style.backgroundColor = "#262626"; item.style.color = "#e0e0e0";
+  item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
+  item.style.border = "1px solid #3d3d3d"; item.style.borderLeft = `6px solid ${highlightColor}`;
+
+  item.innerHTML = `
+    <div>
+      <div style="font-weight:600; font-size:12px; color:#ffffff;">${t.text}</div>
+      <div style="font-size:10px; color:#888888; margin-top:2px;">${monthsList[t.month]} | ${t.period}</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="color: ${isExpense ? '#ef4444' : '#10b981'}; font-weight: 700; font-size:12px;">${isExpense ? '-' : '+'}.₹${Math.abs(t.amount)}</span>
+      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
+    </div>`;
+  list.appendChild(item);
+}
+
+// Form Event Listeners 
+mainCategory.addEventListener('change', handleMainCategoryChange);
+subCategory.addEventListener('change', populateBrands);
+itemBrand.addEventListener('change', populateModels);
+itemModel.addEventListener('change', autoUpdatePrice);
+category.addEventListener('change', updateButtonMode);
+form.addEventListener('submit', saveTransaction);
+
+// Launch Instance
+handleMainCategoryChange();
+init();
