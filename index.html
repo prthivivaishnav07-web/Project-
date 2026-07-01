@@ -2,40 +2,45 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Tracker</title>
+    <title>Shopping & Wallet Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" id="app-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Finance Tracker</h2>
+            <h2>🛒 Shopping Tracker</h2>
             <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:#34495e; color:white; border:0; padding:5px 10px; border-radius:3px;">Dark Mode 🌙</button>
         </div>
 
-        <div class="balance-box" id="balance-card" style="padding: 20px; background: #f1f2f6; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-            <h3>Current Balance</h3>
-            <div class="balance" style="font-size: 24px; font-weight: bold;">$<span id="balance">10000.00</span></div>
+        <div class="balance-box" id="balance-card" style="padding: 20px; background: #d4efdf; color: #145a32; border-radius: 8px; text-align: center; margin-bottom: 20px; transition: 0.3s;">
+            <h3>Available Wallet Balance</h3>
+            <div class="balance" style="font-size: 28px; font-weight: bold;">$<span id="balance">10000.00</span></div>
         </div>
 
         <form id="tracker-form">
             <input type="hidden" id="edit-id" value="">
-            <input type="text" id="desc" placeholder="Description" required>
-            <input type="text" id="amount" placeholder="Amount (e.g., -5*20 or 500/2)" required>
             
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Item Name:</label>
+            <input type="text" id="desc" placeholder="e.g., Nike Shoes, Pizza, T-Shirt" required>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Price / Calculation:</label>
+            <input type="text" id="amount" placeholder="e.g., 2000 or 4*500" required>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Item Category & Color Tag:</label>
             <select id="category">
-                <option value="General">General ⚪</option>
-                <option value="Food">Food 🍔</option>
-                <option value="Salary">Salary 💰</option>
-                <option value="Rent">Rent 🏠</option>
-                <option value="Entertainment">Entertainment 🎮</option>
+                <option value="Clothes">Clothes 👗 (Purple)</option>
+                <option value="Food">Food 🍔 (Orange)</option>
+                <option value="Electronics">Electronics ⚡ (Blue)</option>
+                <option value="Salary">Add Money Card 💰 (Green)</option>
+                <option value="General">Other ⚪ (Gray)</option>
             </select>
             
-            <button type="submit" id="form-submit-btn">Add Transaction</button>
+            <button type="submit" id="form-submit-btn" style="background: #e74c3c; color: white;">Buy Item (Subtract)</button>
         </form>
 
-        <button onclick="resetData()" style="margin-top:15px; background:#7f8c8d; color:white; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Reset All Data</button>
+        <button onclick="resetData()" style="margin-top:15px; background:#7f8c8d; color:white; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Clear Shopping History</button>
 
-        <h3>History (Tap item to Edit)</h3>
+        <h3>Purchased Items List</h3>
         <ul id="list" class="list"></ul>
     </div>
 </body>
