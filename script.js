@@ -9,8 +9,9 @@ const submitBtn = document.getElementById('form-submit-btn');
 const balanceCard = document.getElementById('balance-card');
 const appContainer = document.getElementById('app-container');
 const themeSelect = document.getElementById('theme-select');
+const sidebar = document.getElementById('history-sidebar');
+const sidebarTitle = document.getElementById('sidebar-title');
 
-// Color tags for item history entries
 const categoryColors = {
   'Clothes': '#9b59b6',
   'Food': '#e67e22',
@@ -22,7 +23,10 @@ const categoryColors = {
 let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 let currentTheme = localStorage.getItem('siteTheme') || 'white';
 
-// Standard 4-Option Theme Configurations
+function toggleSidebar(open) {
+  sidebar.style.right = open ? '0px' : '-300px';
+}
+
 function changeTheme() {
   currentTheme = themeSelect.value;
   localStorage.setItem('siteTheme', currentTheme);
@@ -31,47 +35,61 @@ function changeTheme() {
 
 function applyThemeStyles() {
   themeSelect.value = currentTheme;
+  const isDark = currentTheme === 'black' || currentTheme === 'blue';
   
+  // Sidebar styling adjustment matching main background theme rules
   if (currentTheme === 'white') {
     document.body.style.backgroundColor = '#ffffff';
     appContainer.style.backgroundColor = '#ffffff';
     appContainer.style.color = '#000000';
-    appContainer.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+    sidebar.style.background = '#ffffff';
+    sidebarTitle.style.color = '#333333';
   } else if (currentTheme === 'grey') {
     document.body.style.backgroundColor = '#7f8c8d';
     appContainer.style.backgroundColor = '#b2bec3';
     appContainer.style.color = '#2d3436';
-    appContainer.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+    sidebar.style.background = '#b2bec3';
+    sidebarTitle.style.color = '#2d3436';
   } else if (currentTheme === 'black') {
     document.body.style.backgroundColor = '#111111';
     appContainer.style.backgroundColor = '#222222';
     appContainer.style.color = '#ffffff';
-    appContainer.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5)';
+    sidebar.style.background = '#222222';
+    sidebarTitle.style.color = '#ffffff';
   } else if (currentTheme === 'blue') {
     document.body.style.backgroundColor = '#2c3e50';
     appContainer.style.backgroundColor = '#34495e';
     appContainer.style.color = '#ecf0f1';
-    appContainer.style.boxShadow = '0 4px 15px rgba(52, 152, 219, 0.4)';
+    sidebar.style.background = '#34495e';
+    sidebarTitle.style.color = '#ecf0f1';
   }
-  
-  // Refresh entries to match dark/light contrast elements
   init();
+}
+
+function formatDuration(timestamp) {
+  if (!timestamp) return "JUST NOW";
+  const diff = Date.now() - timestamp;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) return "JUST NOW";
+  if (minutes < 60) return `${minutes}M AGO`;
+  if (hours < 24) return `${hours}H AGO`;
+  return `${days}D AGO`;
 }
 
 function calculateAmount(inputVal) {
   try {
     let sanitized = inputVal.replace(/[^0-9+\-*/.]/g, '');
     if (!sanitized) return 0;
-    
     let result = Function(`"use strict"; return (${sanitized})`)();
-    
-    // Auto-subtraction rule for spending
     if (category.value !== 'Salary') {
       result = -Math.abs(result); 
     } else {
       result = Math.abs(result);
     }
-    
     return isNaN(result) || !isFinite(result) ? null : result;
   } catch (error) {
     return null;
@@ -80,90 +98,77 @@ function calculateAmount(inputVal) {
 
 function saveTransaction(e) {
   e.preventDefault();
-  
-  if (text.value.trim() === '' || amount.value.trim() === '') {
-    alert('Please complete all standard fields.');
-    return;
-  }
-
   const finalAmount = calculateAmount(amount.value);
-  if (finalAmount === null) {
-    alert('Invalid numeric or calculation format.');
-    return;
-  }
+  if (finalAmount === null) return;
 
   const editId = editIdInput.value;
 
   if (editId) {
     transactions = transactions.map(t => t.id == editId ? {
       ...t,
-      text: text.value,
+      text: text.value.toUpperCase(),
       amount: finalAmount,
       cat: category.value
     } : t);
-    submitBtn.innerText = 'Purchase Item (Subtract)';
-    submitBtn.style.background = '#e74c3c';
     editIdInput.value = '';
   } else {
-    const transaction = {
+    transactions.push({
       id: Date.now(),
-      text: text.value,
+      text: text.value.toUpperCase(),
       amount: finalAmount,
-      cat: category.value
-    };
-    transactions.push(transaction);
+      cat: category.value,
+      timestamp: Date.now()
+    });
   }
   
   init();
   updateLocalStorage();
   text.value = '';
   amount.value = '';
+  // Automatically slide open history view so they see the result immediately
+  toggleSidebar(true);
 }
 
 function editTransaction(id) {
-  const transactionToEdit = transactions.find(t => t.id === id);
-  if (!transactionToEdit) return;
-
-  text.value = transactionToEdit.text;
-  amount.value = Math.abs(transactionToEdit.amount); 
-  category.value = transactionToEdit.cat;
-  editIdInput.value = transactionToEdit.id;
-
-  submitBtn.innerText = 'Modify Record';
-  submitBtn.style.background = '#3498db';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const t = transactions.find(t => t.id === id);
+  if (!t) return;
+  text.value = t.text;
+  amount.value = Math.abs(t.amount); 
+  category.value = t.cat;
+  editIdInput.value = t.id;
+  toggleSidebar(false);
 }
 
 function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
   const itemColor = categoryColors[t.cat] || '#7f8c8d';
-  const darkBackgrounds = ['black', 'blue'];
+  const isDark = currentTheme === 'black' || currentTheme === 'blue';
 
-  item.style.padding = "14px";
-  item.style.margin = "10px 0";
+  item.style.padding = "12px";
+  item.style.margin = "8px 0";
   item.style.borderRadius = "6px";
-  item.style.background = darkBackgrounds.includes(currentTheme) ? "#333333" : "#fdfefe";
-  item.style.color = darkBackgrounds.includes(currentTheme) ? "#ffffff" : "#333333";
+  item.style.background = isDark ? "#333333" : "#f8f9fa";
+  item.style.color = isDark ? "#ffffff" : "#333333";
   item.style.display = "flex";
   item.style.justifyContent = "space-between";
   item.style.alignItems = "center";
-  item.style.boxShadow = "0 2px 4px rgba(0,0,0,0.05)";
-  item.style.borderLeft = `8px solid ${itemColor}`;
+  item.style.borderLeft = `6px solid ${itemColor}`;
   item.style.cursor = 'pointer';
   item.setAttribute('onclick', `editTransaction(${t.id})`);
 
+  const timeLabel = formatDuration(t.timestamp);
+
   item.innerHTML = `
-    <div>
-      <span style="font-weight:bold; font-size:15px;">${t.text}</span> 
-      <br>
-      <span style="background:${itemColor}; color:white; padding:2px 6px; border-radius:3px; font-size:10px; display:inline-block; margin-top:4px;">${t.cat}</span>
+    <div style="max-width: 65%;">
+      <span style="font-weight:700; font-size:13px; display:block; word-break:break-all;">${t.text}</span> 
+      <span style="color:#888; font-size:10px; font-weight:700; display:inline-block; margin-top:2px;">${timeLabel}</span>
     </div>
-    <div style="display: flex; align-items: center; gap: 15px;">
-      <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: bold; font-size:15px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: 700; font-size:13px;">
         ${isExpense ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}
       </span>
-      <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:16px;">✕</button>
+      <button onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:14px;">✕</button>
     </div>
   `;
   list.appendChild(item);
@@ -176,7 +181,7 @@ function removeTransaction(id) {
 }
 
 function resetData() {
-  if (confirm("Reset wallet back to the standard $10,000.00 baseline value?")) {
+  if (confirm("RESET DATA COMPLETELY?")) {
     transactions = [];
     updateLocalStorage();
     init();
@@ -209,18 +214,25 @@ function init() {
   }
 }
 
-// Event listener for live button behavior adjustments
 if(category) {
   category.onchange = () => {
       if(category.value === 'Salary') {
-          submitBtn.innerText = 'Deposit Cash (Add)';
           submitBtn.style.background = '#2ecc71';
       } else {
-          submitBtn.innerText = 'Purchase Item (Subtract)';
           submitBtn.style.background = '#e74c3c';
       }
   };
 }
+
+// Automatically update time labels inside the sidebar drawer every 30 seconds
+setInterval(() => {
+  if (sidebar.style.right === '0px') {
+    const scrollPos = list.scrollTop;
+    list.innerHTML = '';
+    transactions.forEach(addTransactionDOM);
+    list.scrollTop = scrollPos;
+  }
+}, 30000);
 
 form.addEventListener('submit', saveTransaction);
 applyThemeStyles();
