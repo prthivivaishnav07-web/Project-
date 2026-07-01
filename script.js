@@ -1,4 +1,4 @@
-const balance = document.getElementById('balance');
+ const balance = document.getElementById('balance');
 const list = document.getElementById('list');
 const form = document.getElementById('tracker-form');
 const text = document.getElementById('desc');
