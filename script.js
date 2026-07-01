@@ -1,3 +1,4 @@
+// Dom Reference Bindings Nodes System Setup
 const netWorthDisplay = document.getElementById('net-worth');
 const savingsRateDisplay = document.getElementById('savings-rate');
 const burnRateDisplay = document.getElementById('burn-rate');
@@ -26,7 +27,7 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Perfect Electronic Inventory Database mapping
+// Structured Inventory Catalog Matrix Array Values Map
 const catalogData = {
   Mobiles: {
     Apple: { "iPhone 14": 54900, "iPhone 15": 56900, "iPhone 16": 69900 },
@@ -60,11 +61,12 @@ const catalogData = {
 
 let transactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 
+// Core Fix: Hides brand/model dropdown lists cleanly when Custom option is selected
 function handleDisplayChange() {
   const selectedType = itemType.value;
   
   if (selectedType === 'Custom') {
-    brandContainer.style.display = 'none';
+    brandContainer.style.style.display = 'none';
     modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block';
     amount.value = '';
@@ -141,7 +143,7 @@ function toggleSidebar(open) {
 }
 
 function recalculateDashboardMetrics() {
-  const startingBalance = 500000;
+  const startingBalance = 30000; // Updated alignment reference mapping
   let totalDeposits = 0;
   let totalExpenses = 0;
 
@@ -299,7 +301,7 @@ function addTransactionDOM(t) {
   item.style.justifyContent = "space-between"; 
   item.style.alignItems = "center";
   item.style.border = "1px solid #3d3d3d";
-  item.style.borderLeft = `6px solid ${t.cat === 'Salary' ? '#10b981' : '#3498db'}`;
+  item.style.borderLeft = `6px solid ${t.cat === 'Salary' ? '#10b981' : '#2563eb'}`;
 
   item.innerHTML = `
     <div>
@@ -313,13 +315,13 @@ function addTransactionDOM(t) {
   list.appendChild(item);
 }
 
-// Attach explicit listener mappings cleanly
+// Global Document Target Event Bindings Setup
 itemType.addEventListener('change', handleDisplayChange);
 itemBrand.addEventListener('change', populateModels);
 itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
 form.addEventListener('submit', saveTransaction);
 
-// Launch clean state setup
+// Initialize application initialization state
 handleDisplayChange();
 init();
