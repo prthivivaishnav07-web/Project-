@@ -26,41 +26,41 @@ const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Structured Database from requirements
+// Perfect Electronic Inventory Database mapping
 const catalogData = {
   Mobiles: {
     Apple: { "iPhone 14": 54900, "iPhone 15": 56900, "iPhone 16": 69900 },
-    Samsung: { "Galaxy S23": 42000, "Galaxy S24": 49999, "Galaxy S25": 62349 },
-    Redmi: { "Redmi Note 13 5G": 12040, "Redmi Note 14 5G": 14190, "Redmi Note 14 Pro": 22000 },
+    Samsung: { "Galaxy S23": 45000, "Galaxy S24": 49999, "Galaxy S25": 62349 },
+    Redmi: { "Redmi Note 13 5G": 12040, "Redmi Note 14 5G": 14190, "Redmi Note 14 Pro": 26000 },
     Realme: { "Realme 13 Pro": 29439, "Realme 13 Pro+": 23999, "Realme 14 Pro": 26999 },
-    OnePlus: { "OnePlus 11": 45000, "OnePlus 12": 54000, "OnePlus 13": 60890 },
-    Xiaomi: { "Xiaomi 13 Pro": 65000, "Xiaomi 14": 59990, "Xiaomi 14 Civi": 49990 },
-    POCO: { "POCO X6 Pro": 22000, "POCO X7 Pro": 23999 },
-    OPPO: { "OPPO Reno 11": 28000, "OPPO Reno 12": 30000, "OPPO Reno 13": 31990 },
-    Vivo: { "Vivo V30": 29000, "Vivo V40": 34000, "Vivo V50": 29670 },
-    Google: { "Pixel 7": 35000, "Pixel 8": 49000, "Pixel 9": 79999 },
-    Sony: { "Xperia 1 V": 95000, "Xperia 1 VI": 115000 }
+    OnePlus: { "OnePlus 11": 47500, "OnePlus 12": 57000, "OnePlus 13": 60890 },
+    Xiaomi: { "Xiaomi 13 Pro": 70000, "Xiaomi 14": 59990, "Xiaomi 14 Civi": 49990 },
+    POCO: { "POCO X6 Pro": 23500, "POCO X7 Pro": 23999 },
+    OPPO: { "OPPO Reno 11": 30000, "OPPO Reno 12": 32500, "OPPO Reno 13": 31990 },
+    Vivo: { "Vivo V30": 31500, "Vivo V40": 37000, "Vivo V50": 29670 },
+    Google: { "Pixel 7": 37500, "Pixel 8": 52000, "Pixel 9": 79999 },
+    Sony: { "Xperia 1 V": 102500, "Xperia 1 VI": 115000 }
   },
   Laptops: {
-    Apple: { "MacBook Air M2": 79900, "MacBook Air M3": 94900, "MacBook Air M4": 99900, "MacBook Pro M3": 149900 },
-    HP: { "Victus 15": 55000, "Pavilion 14": 60000, "Envy x360": 80000, "Spectre x360": 130000, "Omen": 95000 },
-    Dell: { "Inspiron 15": 45000, "Vostro 15": 40000, "XPS 13": 95000, "Alienware m16": 180000, "Latitude": 70000 },
-    Lenovo: { "IdeaPad Slim 3": 40000, "IdeaPad Slim 5": 60000, "LOQ Gaming": 70000, "Legion 5": 100000, "ThinkPad Series": 70000 },
-    ASUS: { "Vivobook 15": 40000, "Zenbook 14 OLED": 75000, "TUF Gaming F15": 55000, "ROG Strix": 120000 },
-    Acer: { "Aspire Lite": 35000, "Aspire 5": 45000, "Swift Go": 65000, "Predator Helios": 110000 },
-    MSI: { "Modern 14": 45000, "Thin 15": 60000, "Katana": 90000, "Stealth": 150000 },
-    Samsung: { "Galaxy Book2": 60000, "Galaxy Book3": 70000, "Galaxy Book4": 65000, "Galaxy Book5": 75000 },
-    Microsoft: { "Surface Laptop Go 2": 55000, "Surface Laptop 5": 95000, "Surface Laptop 7": 110000 },
-    LG: { "Gram 14": 90000, "Gram 16": 110000 },
-    Huawei: { "MateBook D15": 55000 },
-    Xiaomi: { "RedmiBook Pro": 45000 },
-    Honor: { "MagicBook X14": 45000 }
+    Apple: { "MacBook Air M2": 84400, "MacBook Air M3": 104950, "MacBook Air M4": 117450, "MacBook Pro M3": 224900 },
+    HP: { "Victus 15": 65000, "Pavilion 14": 72500, "Envy x360": 100000, "Spectre x360": 165000, "Omen": 172500 },
+    Dell: { "Inspiron 15": 60000, "Vostro 15": 55000, "XPS 13": 137500, "Alienware m16": 340000, "Latitude": 135000 },
+    Lenovo: { "IdeaPad Slim 3": 50000, "IdeaPad Slim 5": 75000, "LOQ Gaming": 100000, "Legion 5": 160000, "ThinkPad Series": 160000 },
+    ASUS: { "Vivobook 15": 60000, "Zenbook 14 OLED": 112500, "TUF Gaming F15": 87500, "ROG Strix": 235000 },
+    Acer: { "Aspire Lite": 47500, "Aspire 5": 60000, "Swift Go": 82500, "Predator Helios": 195000 },
+    MSI: { "Modern 14": 60000, "Thin 15": 75000, "Katana": 135000, "Stealth": 250000 },
+    Samsung: { "Galaxy Book2": 77500, "Galaxy Book3": 95000, "Galaxy Book4": 107500, "Galaxy Book5": 117500 },
+    Microsoft: { "Surface Laptop Go 2": 67500, "Surface Laptop 5": 127500, "Surface Laptop 7": 155000 },
+    LG: { "Gram 14": 115000, "Gram 16": 145000 },
+    Huawei: { "MateBook D15": 67500 },
+    Xiaomi: { "RedmiBook Pro": 60000 },
+    Honor: { "MagicBook X14": 57500 }
   }
 };
 
 let transactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
 
-function updateBrandDropdown() {
+function handleDisplayChange() {
   const selectedType = itemType.value;
   
   if (selectedType === 'Custom') {
@@ -68,30 +68,42 @@ function updateBrandDropdown() {
     modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block';
     amount.value = '';
-    return;
+    category.value = 'Salary';
+  } else {
+    brandContainer.style.display = 'block';
+    modelContainer.style.display = 'block';
+    customTextContainer.style.display = 'none';
+    category.value = 'Electronics';
+    populateBrands();
   }
+  updateButtonMode();
+}
 
-  brandContainer.style.display = 'block';
-  modelContainer.style.display = 'block';
-  customTextContainer.style.display = 'none';
+function populateBrands() {
+  const selectedType = itemType.value;
+  if (selectedType === 'Custom') return;
 
   itemBrand.innerHTML = '';
-  Object.keys(catalogData[selectedType]).forEach(brand => {
+  const brands = Object.keys(catalogData[selectedType]);
+  
+  brands.forEach(brand => {
     let opt = document.createElement('option');
     opt.value = brand;
     opt.innerText = brand;
     itemBrand.appendChild(opt);
   });
-  updateModelDropdown();
+  populateModels();
 }
 
-function updateModelDropdown() {
+function populateModels() {
   const selectedType = itemType.value;
   const selectedBrand = itemBrand.value;
-  if (!catalogData[selectedType] || !catalogData[selectedType][selectedBrand]) return;
+  if (selectedType === 'Custom' || !catalogData[selectedType]?.[selectedBrand]) return;
 
   itemModel.innerHTML = '';
-  Object.keys(catalogData[selectedType][selectedBrand]).forEach(model => {
+  const models = Object.keys(catalogData[selectedType][selectedBrand]);
+  
+  models.forEach(model => {
     let opt = document.createElement('option');
     opt.value = model;
     opt.innerText = model;
@@ -129,7 +141,7 @@ function toggleSidebar(open) {
 }
 
 function recalculateDashboardMetrics() {
-  const startingBalance = 500000; // Adjusted balance for electronics
+  const startingBalance = 500000;
   let totalDeposits = 0;
   let totalExpenses = 0;
 
@@ -163,9 +175,9 @@ function renderYearlyMap() {
     let cellBg = '#333333';
     let textColor = '#aaaaaa';
     
-    if (spend > 0 && spend <= 25000) { cellBg = '#064e3b'; textColor = '#34d399'; }
-    else if (spend > 25000 && spend <= 75000) { cellBg = '#047857'; textColor = '#a7f3d0'; }
-    else if (spend > 75000) { cellBg = '#10b981'; textColor = '#ffffff'; }
+    if (spend > 0 && spend <= 40000) { cellBg = '#064e3b'; textColor = '#34d399'; }
+    else if (spend > 40000 && spend <= 120000) { cellBg = '#047857'; textColor = '#a7f3d0'; }
+    else if (spend > 120000) { cellBg = '#10b981'; textColor = '#ffffff'; }
 
     const monthBlock = document.createElement('div');
     monthBlock.style.background = cellBg;
@@ -194,9 +206,9 @@ function renderDiurnalMap() {
   dayPeriods.forEach(period => {
     const amt = periodSpend[period];
     let barColor = '#4b5563';
-    if (amt > 0 && amt <= 30000) barColor = '#f59e0b';
-    else if (amt > 30000 && amt <= 90000) barColor = '#ea580c';
-    else if (amt > 90000) barColor = '#dc2626';
+    if (amt > 0 && amt <= 50000) barColor = '#f59e0b';
+    else if (amt > 50000 && amt <= 150000) barColor = '#ea580c';
+    else if (amt > 150000) barColor = '#dc2626';
 
     const blockRow = document.createElement('div');
     blockRow.style.display = 'flex';
@@ -211,7 +223,7 @@ function renderDiurnalMap() {
     blockRow.innerHTML = `
       <div style="width: 85px; font-weight:600; color:#e0e0e0;">${period}</div>
       <div style="flex:1; margin: 0 14px; background: #262626; height:8px; border-radius:4px; overflow:hidden; border: 1px solid #3d3d3d;">
-         <div style="width: ${Math.min(100, (amt/200000)*100)}%; background: ${barColor}; height:100%;"></div>
+         <div style="width: ${Math.min(100, (amt/300000)*100)}%; background: ${barColor}; height:100%;"></div>
       </div>
       <div style="font-weight:700; color:${amt > 0 ? barColor : '#888888'};">₹${amt.toFixed(0)}</div>
     `;
@@ -301,8 +313,13 @@ function addTransactionDOM(t) {
   list.appendChild(item);
 }
 
-if (form) form.addEventListener('submit', saveTransaction);
+// Attach explicit listener mappings cleanly
+itemType.addEventListener('change', handleDisplayChange);
+itemBrand.addEventListener('change', populateModels);
+itemModel.addEventListener('change', autoUpdatePrice);
+category.addEventListener('change', updateButtonMode);
+form.addEventListener('submit', saveTransaction);
 
-// Initial Cascading Population Setup Run
-updateBrandDropdown();
+// Launch clean state setup
+handleDisplayChange();
 init();
