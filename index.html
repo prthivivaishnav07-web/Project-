@@ -9,7 +9,6 @@
     
     <div class="container" id="app-container" style="max-width: 480px; margin: auto; padding: 20px; border-radius: 12px; box-sizing: border-box; background: #1e1e1e; border: 1px solid #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         
-        <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #2d2d2d;">
             <h2 style="margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; color: #ffffff;">FINANCIAL TIMELINE</h2>
             <div style="display: flex; gap: 8px;">
@@ -18,11 +17,10 @@
             </div>
         </div>
 
-        <!-- Dashboard Display Panel -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
             <div style="grid-column: span 2; background: #10b981; color: white; padding: 14px; border-radius: 8px; text-align: center;">
                 <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9;">NET WORTH (TOTAL WALLET)</div>
-                <div style="font-size: 26px; font-weight: 700; margin-top: 2px;">₹<span id="net-worth">10000.00</span></div>
+                <div style="font-size: 26px; font-weight: 700; margin-top: 2px;">₹<span id="net-worth">0.00</span></div>
             </div>
 
             <div style="background: rgba(37, 99, 235, 0.15); border: 1px solid #2563eb; padding: 10px; border-radius: 8px; text-align: center;">
@@ -36,10 +34,8 @@
             </div>
         </div>
 
-        <!-- Main Submission Form Structure -->
         <form id="tracker-form" style="display: flex; flex-direction: column; gap: 14px; margin-top: 20px;">
             
-            <!-- Type Input Selector Dropdown -->
             <div>
                 <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">ELECTRONIC ITEM TYPE</label>
                 <select id="item-type" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
@@ -49,33 +45,29 @@
                 </select>
             </div>
 
-            <!-- Brand Field Area -->
             <div id="brand-container">
                 <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">BRAND NAME</label>
                 <select id="item-brand" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
                 </select>
             </div>
 
-            <!-- Model Field Area -->
             <div id="model-container">
                 <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">MODEL DESCRIPTION</label>
                 <select id="item-model" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
                 </select>
             </div>
 
-            <!-- Custom Entry text description display -->
             <div id="custom-text-container" style="display: none;">
-                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">CUSTOM DESCRIPTION</label>
-                <input type="text" id="custom-desc" placeholder="Enter name or description" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;">
+                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">CUSTOM DESCRIPTION / NOTES</label>
+                <input type="text" id="custom-desc" placeholder="e.g., Pizza, Shop Allowance, Internet Bill" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;">
             </div>
             
-            <!-- Value Value Pricing and Action Blocks -->
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
-                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa; letter-spacing: 0.3px;">PRICE / VALUE (₹)</label>
+                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">PRICE / VALUE (₹)</label>
                     <input type="text" id="amount" placeholder="Price" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;" required>
                 </div>
-                <div style="width: 140px;">
+                <div style="width: 150px;">
                     <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">TRANSACTION ACTION</label>
                     <select id="category" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white; font-weight: 600;">
                         <option value="Electronics" selected>EXPENSE</option>
@@ -84,7 +76,6 @@
                 </div>
             </div>
 
-            <!-- Date Fields Components -->
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
                     <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">TIMELINE MONTH</label>
@@ -116,22 +107,20 @@
             
             <div style="padding-bottom: 4px;"></div>
             
-            <button type="submit" id="form-submit-btn" style="background: #ef4444; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
+            <button type="submit" id="form-submit-btn" style="background: #ef4444; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; transition: background 0.2s ease;">SUBTRACT TRANSACTION</button>
         </form>
 
-        <!-- Dynamic Visualization Maps Displays -->
         <div style="margin-top: 24px; padding: 14px; background: #262626; border-radius: 8px; border: 1px solid #3d3d3d;">
-            <div style="font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">12-Month Contribution Map</div>
+            <div style="font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">12-Month Contribution Map</div>
             <div id="year-contribution-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;"></div>
         </div>
 
         <div style="margin-top: 16px; padding: 14px; background: #262626; border-radius: 8px; border: 1px solid #3d3d3d;">
-            <div style="font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">Diurnal Money Burn Heat Map</div>
+            <div style="font-size: 11px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">Diurnal Money Burn Heat Map</div>
             <div id="diurnal-heatmap-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
-    <!-- Layout History View Panel Displays -->
     <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #1e1e1e; box-shadow: -4px 0 15px rgba(0,0,0,0.5); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #3d3d3d;">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3d3d3d; padding-bottom: 10px; margin-bottom: 12px;">
             <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
@@ -144,4 +133,4 @@
 
     <script src="script.js"></script>
 </body>
-                </html>
+</html>
