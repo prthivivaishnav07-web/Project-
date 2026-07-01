@@ -80,36 +80,33 @@ function changeTheme() {
 function applyThemeStyles() {
   themeSelect.value = currentTheme;
   
-  // Base line colors depending on dark/light status
   let lightLine = '#dcdde1';
   let darkLine = '#444444';
   
-  let linesToUpdate = [
-    document.getElementById('metrics-board'),
-    document.getElementById('tracker-form').children[2]
-  ];
+  let mBoard = document.getElementById('metrics-board');
+  let cBox = document.getElementById('category-box-divider');
 
   if (currentTheme === 'white') {
     document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#ffffff'; appContainer.style.color = '#333333'; sidebar.style.background = '#ffffff'; sidebarTitle.style.color = '#333333'; sidebar.style.borderColor = lightLine; appContainer.style.borderColor = lightLine;
-    linesToUpdate.forEach(el => el.style.borderColor = lightLine);
+    if(mBoard) mBoard.style.borderColor = lightLine; if(cBox) cBox.style.borderColor = lightLine;
   } else if (currentTheme === 'grey') {
     document.body.style.backgroundColor = '#7f8c8d'; appContainer.style.backgroundColor = '#b2bec3'; appContainer.style.color = '#2d3436'; sidebar.style.background = '#b2bec3'; sidebarTitle.style.color = '#2d3436'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
-    linesToUpdate.forEach(el => el.style.borderColor = darkLine);
+    if(mBoard) mBoard.style.borderColor = darkLine; if(cBox) cBox.style.borderColor = darkLine;
   } else if (currentTheme === 'black') {
     document.body.style.backgroundColor = '#111111'; appContainer.style.backgroundColor = '#222222'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#222222'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
-    linesToUpdate.forEach(el => el.style.borderColor = darkLine);
+    if(mBoard) mBoard.style.borderColor = darkLine; if(cBox) cBox.style.borderColor = darkLine;
   } else if (currentTheme === 'pink') {
-    document.body.style.backgroundColor = '#fbc531'; appContainer.style.backgroundColor = '#ffb8b8'; appContainer.style.color = '#2f3640'; sidebar.style.background = '#ffb8b8'; sidebarTitle.style.color = '#2f3640'; sidebar.style.borderColor = '#ff4757'; appContainer.style.borderColor = '#ff4757';
-    linesToUpdate.forEach(el => el.style.borderColor = '#ff4757');
+    document.body.style.backgroundColor = '#fff0f6'; appContainer.style.backgroundColor = '#ffdeeb'; appContainer.style.color = '#a61e4d'; sidebar.style.background = '#ffdeeb'; sidebarTitle.style.color = '#a61e4d'; sidebar.style.borderColor = '#f783ac'; appContainer.style.borderColor = '#f783ac';
+    if(mBoard) mBoard.style.borderColor = '#f783ac'; if(cBox) cBox.style.borderColor = '#f783ac';
   } else if (currentTheme === 'green') {
-    document.body.style.backgroundColor = '#2f3640'; appContainer.style.backgroundColor = '#26de81'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#26de81'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#0b9c54'; appContainer.style.borderColor = '#0b9c54';
-    linesToUpdate.forEach(el => el.style.borderColor = '#0b9c54');
+    document.body.style.backgroundColor = '#e6fcf5'; appContainer.style.backgroundColor = '#c3fae8'; appContainer.style.color = '#0ca678'; sidebar.style.background = '#c3fae8'; sidebarTitle.style.color = '#0ca678'; sidebar.style.borderColor = '#20c997'; appContainer.style.borderColor = '#20c997';
+    if(mBoard) mBoard.style.borderColor = '#20c997'; if(cBox) cBox.style.borderColor = '#20c997';
   } else if (currentTheme === 'purple') {
-    document.body.style.backgroundColor = '#dff9fb'; appContainer.style.backgroundColor = '#a55eea'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#a55eea'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#6f2dbd'; appContainer.style.borderColor = '#6f2dbd';
-    linesToUpdate.forEach(el => el.style.borderColor = '#6f2dbd');
+    document.body.style.backgroundColor = '#f3f0ff'; appContainer.style.backgroundColor = '#e5dbff'; appContainer.style.color = '#5f3dc4'; sidebar.style.background = '#e5dbff'; sidebarTitle.style.color = '#5f3dc4'; sidebar.style.borderColor = '#845ef7'; appContainer.style.borderColor = '#845ef7';
+    if(mBoard) mBoard.style.borderColor = '#845ef7'; if(cBox) cBox.style.borderColor = '#845ef7';
   } else if (currentTheme === 'brown') {
-    document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#cd84f1'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#cd84f1'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#4b2c20'; appContainer.style.borderColor = '#4b2c20';
-    linesToUpdate.forEach(el => el.style.borderColor = '#4b2c20');
+    document.body.style.backgroundColor = '#fdf8f5'; appContainer.style.backgroundColor = '#f4eae1'; appContainer.style.color = '#4e342e'; sidebar.style.background = '#f4eae1'; sidebarTitle.style.color = '#4e342e'; sidebar.style.borderColor = '#8d6e63'; appContainer.style.borderColor = '#8d6e63';
+    if(mBoard) mBoard.style.borderColor = '#8d6e63'; if(cBox) cBox.style.borderColor = '#8d6e63';
   }
   init();
 }
@@ -214,12 +211,11 @@ function init() {
 function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
-  const isDark = ['black', 'green', 'purple', 'brown'].includes(currentTheme);
+  const isDark = ['black'].includes(currentTheme);
   item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
-  item.style.background = isDark ? "rgba(0,0,0,0.2)" : "#f8f9fa"; item.style.color = isDark ? "#ffffff" : "#333333";
+  item.style.background = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.03)"; item.style.color = isDark ? "#ffffff" : "#333333";
   item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
   item.style.borderLeft = `5px solid ${categoryColors[t.cat] || '#7f8c8d'}`;
-  item.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
 
   item.innerHTML = `
     <div><span style="font-weight:700; font-size:12px;">${t.text}</span></div>
