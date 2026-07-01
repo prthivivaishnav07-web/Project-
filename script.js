@@ -79,19 +79,41 @@ function changeTheme() {
 
 function applyThemeStyles() {
   themeSelect.value = currentTheme;
+  
+  // Base line colors depending on dark/light status
+  let lightLine = '#dcdde1';
+  let darkLine = '#444444';
+  
+  let linesToUpdate = [
+    document.getElementById('metrics-board'),
+    document.getElementById('tracker-form').children[2]
+  ];
+
   if (currentTheme === 'white') {
-    document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#ffffff'; appContainer.style.color = '#333333'; sidebar.style.background = '#ffffff'; sidebarTitle.style.color = '#333333';
+    document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#ffffff'; appContainer.style.color = '#333333'; sidebar.style.background = '#ffffff'; sidebarTitle.style.color = '#333333'; sidebar.style.borderColor = lightLine; appContainer.style.borderColor = lightLine;
+    linesToUpdate.forEach(el => el.style.borderColor = lightLine);
   } else if (currentTheme === 'grey') {
-    document.body.style.backgroundColor = '#7f8c8d'; appContainer.style.backgroundColor = '#b2bec3'; appContainer.style.color = '#2d3436'; sidebar.style.background = '#b2bec3'; sidebarTitle.style.color = '#2d3436';
+    document.body.style.backgroundColor = '#7f8c8d'; appContainer.style.backgroundColor = '#b2bec3'; appContainer.style.color = '#2d3436'; sidebar.style.background = '#b2bec3'; sidebarTitle.style.color = '#2d3436'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
+    linesToUpdate.forEach(el => el.style.borderColor = darkLine);
   } else if (currentTheme === 'black') {
-    document.body.style.backgroundColor = '#111111'; appContainer.style.backgroundColor = '#222222'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#222222'; sidebarTitle.style.color = '#ffffff';
-  } else if (currentTheme === 'blue') {
-    document.body.style.backgroundColor = '#2c3e50'; appContainer.style.backgroundColor = '#34495e'; appContainer.style.color = '#ecf0f1'; sidebar.style.background = '#34495e'; sidebarTitle.style.color = '#ecf0f1';
+    document.body.style.backgroundColor = '#111111'; appContainer.style.backgroundColor = '#222222'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#222222'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = darkLine; appContainer.style.borderColor = darkLine;
+    linesToUpdate.forEach(el => el.style.borderColor = darkLine);
+  } else if (currentTheme === 'pink') {
+    document.body.style.backgroundColor = '#fbc531'; appContainer.style.backgroundColor = '#ffb8b8'; appContainer.style.color = '#2f3640'; sidebar.style.background = '#ffb8b8'; sidebarTitle.style.color = '#2f3640'; sidebar.style.borderColor = '#ff4757'; appContainer.style.borderColor = '#ff4757';
+    linesToUpdate.forEach(el => el.style.borderColor = '#ff4757');
+  } else if (currentTheme === 'green') {
+    document.body.style.backgroundColor = '#2f3640'; appContainer.style.backgroundColor = '#26de81'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#26de81'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#0b9c54'; appContainer.style.borderColor = '#0b9c54';
+    linesToUpdate.forEach(el => el.style.borderColor = '#0b9c54');
+  } else if (currentTheme === 'purple') {
+    document.body.style.backgroundColor = '#dff9fb'; appContainer.style.backgroundColor = '#a55eea'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#a55eea'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#6f2dbd'; appContainer.style.borderColor = '#6f2dbd';
+    linesToUpdate.forEach(el => el.style.borderColor = '#6f2dbd');
+  } else if (currentTheme === 'brown') {
+    document.body.style.backgroundColor = '#f5f6fa'; appContainer.style.backgroundColor = '#cd84f1'; appContainer.style.color = '#ffffff'; sidebar.style.background = '#cd84f1'; sidebarTitle.style.color = '#ffffff'; sidebar.style.borderColor = '#4b2c20'; appContainer.style.borderColor = '#4b2c20';
+    linesToUpdate.forEach(el => el.style.borderColor = '#4b2c20');
   }
   init();
 }
 
-// Calculates dynamic analytics values live
 function recalculateDashboardMetrics() {
   const startingBalance = 10000;
   let totalDeposits = 0;
@@ -100,40 +122,29 @@ function recalculateDashboardMetrics() {
 
   const now = Date.now();
   const oneWeekAgo = now - (7 * 24 * 60 * 60 * 1000);
-
-  // Parse custom timestamps if available
   let firstTransactionTime = now;
 
   transactions.forEach(t => {
-    if (t.timestamp && t.timestamp < firstTransactionTime) {
-      firstTransactionTime = t.timestamp;
-    }
-
+    if (t.timestamp && t.timestamp < firstTransactionTime) firstTransactionTime = t.timestamp;
     if (t.amount > 0) {
       totalDeposits += t.amount;
     } else {
       totalExpenses += Math.abs(t.amount);
-      if (t.timestamp && t.timestamp >= oneWeekAgo) {
-        weeklyExpenseSum += Math.abs(t.amount);
-      }
+      if (t.timestamp && t.timestamp >= oneWeekAgo) weeklyExpenseSum += Math.abs(t.amount);
     }
   });
 
-  // 1. Net Worth Calculation
   const netWorth = startingBalance + totalDeposits - totalExpenses;
   netWorthDisplay.innerText = netWorth.toFixed(2);
 
-  // 2. Savings Rate Calculation
   const overallIncomePool = startingBalance + totalDeposits;
   const savingsRate = overallIncomePool > 0 ? ((netWorth / overallIncomePool) * 100) : 0;
   savingsRateDisplay.innerText = `${Math.max(0, Math.min(100, savingsRate)).toFixed(0)}%`;
 
-  // 3. Daily Burn Rate Calculation
   const totalDaysActive = Math.max(1, Math.ceil((now - firstTransactionTime) / (1000 * 60 * 60 * 24)));
   const burnRate = totalExpenses / totalDaysActive;
   burnRateDisplay.innerText = `$${burnRate.toFixed(2)}/day`;
 
-  // 4. Monthly Gross Revenue Income with standard Indian GST & Income Tax Estimates (18% GST Bracket, 10% Flat TDS/Tax)
   const grossMonthlyIncome = totalDeposits; 
   const gstDeduction = grossMonthlyIncome * 0.18;
   const taxDeduction = grossMonthlyIncome * 0.10;
@@ -142,7 +153,6 @@ function recalculateDashboardMetrics() {
   monthlyIncomeDisplay.innerText = `$${grossMonthlyIncome.toFixed(2)}`;
   taxBreakdownDisplay.innerText = `Take-home: $${netMonthlyIncome.toFixed(2)} (-18% GST, -10% Tax)`;
 
-  // 5. Weekly Payments calculation
   weeklyPaymentsDisplay.innerText = `$${weeklyExpenseSum.toFixed(2)}`;
 }
 
@@ -182,9 +192,7 @@ function saveTransaction(e) {
 
   const itemLabelText = text.value.toUpperCase();
   let cleanItemName = itemLabelText;
-  if (category.value === 'Food') {
-    cleanItemName = `${itemLabelText} (${itemSize.value})`;
-  }
+  if (category.value === 'Food') cleanItemName = `${itemLabelText} (${itemSize.value})`;
 
   transactions.push({ id: Date.now(), text: cleanItemName, amount: finalAmount, cat: category.value, timestamp: Date.now() });
   init(); updateLocalStorage();
@@ -206,17 +214,18 @@ function init() {
 function addTransactionDOM(t) {
   const item = document.createElement('li');
   const isExpense = t.amount < 0;
-  const isDark = currentTheme === 'black' || currentTheme === 'blue';
-  item.style.padding = "12px"; item.style.margin = "8px 0"; item.style.borderRadius = "8px";
-  item.style.background = isDark ? "#333333" : "#f8f9fa"; item.style.color = isDark ? "#ffffff" : "#333333";
+  const isDark = ['black', 'green', 'purple', 'brown'].includes(currentTheme);
+  item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "6px";
+  item.style.background = isDark ? "rgba(0,0,0,0.2)" : "#f8f9fa"; item.style.color = isDark ? "#ffffff" : "#333333";
   item.style.display = "flex"; item.style.justifyContent = "space-between"; item.style.alignItems = "center";
-  item.style.borderLeft = `6px solid ${categoryColors[t.cat] || '#7f8c8d'}`;
+  item.style.borderLeft = `5px solid ${categoryColors[t.cat] || '#7f8c8d'}`;
+  item.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
 
   item.innerHTML = `
-    <div><span style="font-weight:700; font-size:13px;">${t.text}</span></div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span style="color: ${isExpense ? '#e74c3c' : '#2ecc71'}; font-weight: 700; font-size:13px;">${isExpense ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}</span>
-      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#e74c3c; cursor:pointer; font-weight:bold; font-size:14px;">✕</button>
+    <div><span style="font-weight:700; font-size:12px;">${t.text}</span></div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="color: ${isExpense ? '#ff4757' : '#2ecc71'}; font-weight: 700; font-size:12px;">${isExpense ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}</span>
+      <button type="button" onclick="event.stopPropagation(); removeTransaction(${t.id})" style="background:none; border:none; color:#ff4757; cursor:pointer; font-weight:bold; font-size:12px;">✕</button>
     </div>`;
   list.appendChild(item);
 }
