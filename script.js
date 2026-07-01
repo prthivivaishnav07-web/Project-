@@ -75,10 +75,10 @@ function updateButtonMode(catValue) {
   if (!submitBtn) return;
   if (catValue === 'Salary') {
     submitBtn.style.background = '#2ecc71';
-    submitBtn.innerText = 'DEPOSIT FUNDS';
+    submitBtn.innerText = 'DEPOSIT ';
   } else {
     submitBtn.style.background = '#e74c3c';
-    submitBtn.innerText = 'SUBTRACT TRANSACTION';
+    submitBtn.innerText = 'TRANSACTION';
   }
 }
 
