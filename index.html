@@ -1,126 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEGOZI VAISHNAV - FINANCIAL TIMELINE</title>
+    <title>FINANCIAL TIMELINE</title>
 </head>
-<body id="body-bg" style="margin: 0; padding: 15px 10px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f6fa; color: #333; transition: background 0.25s ease;">
+<body id="body-bg" style="margin: 0; padding: 20px 10px; font-family: 'Segoe UI', Arial, sans-serif; background-color: #121212; color: #e0e0e0;">
     
-    <div class="container" id="app-container" style="max-width: 500px; margin: auto; padding: 20px; border-radius: 14px; box-sizing: border-box; background: #ffffff; border: 2px solid #dcdde1; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: all 0.25s ease;">
+    <div class="container" id="app-container" style="max-width: 480px; margin: auto; padding: 20px; border-radius: 12px; box-sizing: border-box; background: #1e1e1e; border: 1px solid #2d2d2d; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
         
-        <div id="app-header" style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 2px solid #e1b12c;">
-            <h2 style="margin: 0; font-size: 16px; font-weight: 800; letter-spacing: 0.3px; color: inherit;">🏬 FINANCIAL TIMELINE</h2>
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <select id="theme-select" style="padding: 6px 4px; border-radius: 6px; border: 1px solid #ccc; font-size: 10px; font-weight: 700; cursor: pointer; background: #fff; color: #333;">
-                    <option value="white">WHITE ⚪</option>
-                    <option value="grey">GREY 🔘</option>
-                    <option value="black">BLACK ⚫</option>
-                    <option value="pink">PINK 🌸</option>
-                    <option value="green">GREEN 🟢</option>
-                    <option value="purple">PURPLE 🔮</option>
-                    <option value="brown">BROWN 🪵</option>
-                </select>
-                <button type="button" onclick="toggleSidebar(true)" style="background: #3498db; color: white; border: none; font-size: 11px; font-weight:700; padding: 6px 10px; border-radius: 6px; cursor: pointer;">LOGS 🧾</button>
-                <button type="button" onclick="resetData()" style="background: #e74c3c; color: white; border: none; font-size: 11px; font-weight:700; padding: 6px 10px; border-radius: 6px; cursor: pointer;">RESET 🔄</button>
+        <!-- Header Section with Clean Standard Right-Hand Buttons -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #2d2d2d;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; color: #ffffff;">FINANCIAL TIMELINE</h2>
+            <div style="display: flex; gap: 8px;">
+                <button type="button" onclick="toggleSidebar(true)" style="background: #2563eb; color: white; border: none; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; cursor: pointer;">LOGS</button>
+                <button type="button" onclick="resetData()" style="background: #dc2626; color: white; border: none; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 4px; cursor: pointer;">RESET</button>
             </div>
         </div>
 
-        <div id="metrics-board" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-bottom: 16px; border-bottom: 2px solid #dcdde1;">
-            <div style="grid-column: span 2; background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; padding: 14px; border-radius: 10px; text-align: center; box-shadow: 0 3px 8px rgba(46,204,113,0.15);">
-                <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; opacity: 0.95;">NET WORTH (TOTAL WALLET)</div>
-                <div style="font-size: 28px; font-weight: 800; margin-top: 2px;">$<span id="net-worth">10000.00</span></div>
+        <!-- Metrics Cards Board -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px;">
+            <div style="grid-column: span 2; background: #10b981; color: white; padding: 14px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; opacity: 0.9;">NET WORTH (TOTAL WALLET)</div>
+                <div style="font-size: 26px; font-weight: 700; margin-top: 2px;">$<span id="net-worth">10000.00</span></div>
             </div>
 
-            <div id="savings-rate-box" style="background: rgba(52, 152, 219, 0.1); border: 2px solid #3498db; padding: 10px; border-radius: 8px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #2980b9; text-transform: uppercase;">Savings Rate</div>
-                <div id="savings-rate" style="font-size: 16px; font-weight: 700; margin-top: 2px; color: #2980b9;">100%</div>
+            <div style="background: rgba(37, 99, 235, 0.15); border: 1px solid #2563eb; padding: 10px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 600; color: #3b82f6; text-transform: uppercase;">Savings Rate</div>
+                <div id="savings-rate" style="font-size: 15px; font-weight: 700; margin-top: 2px; color: #3b82f6;">100%</div>
             </div>
 
-            <div id="burn-rate-box" style="background: rgba(231, 76, 60, 0.1); border: 2px solid #e74c3c; padding: 10px; border-radius: 8px; text-align: center;">
-                <div style="font-size: 10px; font-weight: 700; color: #c0392b; text-transform: uppercase;">Daily Burn Rate</div>
-                <div id="burn-rate" style="font-size: 16px; font-weight: 700; margin-top: 2px; color: #c0392b;">$0.00/day</div>
+            <div style="background: rgba(220, 38, 38, 0.15); border: 1px solid #dc2626; padding: 10px; border-radius: 8px; text-align: center;">
+                <div style="font-size: 10px; font-weight: 600; color: #ef4444; text-transform: uppercase;">Daily Burn Rate</div>
+                <div id="burn-rate" style="font-size: 15px; font-weight: 700; margin-top: 2px; color: #ef4444;">$0.00/day</div>
             </div>
         </div>
 
-        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+        <!-- Input Form Structure -->
+        <form id="tracker-form" style="display: flex; flex-direction: column; gap: 14px; margin-top: 20px;">
             <div>
-                <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">ITEM DESCRIPTION</label>
-                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger, Salary" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box;" required>
+                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa; letter-spacing: 0.3px;">ITEM DESCRIPTION</label>
+                <input type="text" id="desc" oninput="autoUpdatePrice()" placeholder="e.g., Pizza, Burger, Salary" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;" required>
             </div>
             
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
-                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">PRICE / VALUE</label>
-                    <input type="text" id="amount" placeholder="Price" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box;" required>
+                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa; letter-spacing: 0.3px;">PRICE / VALUE</label>
+                    <input type="text" id="amount" placeholder="Price" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white;" required>
                 </div>
-                <div style="width: 110px;">
-                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">SIZE VARIANT</label>
-                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 10px 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; color: #333;">
-                        <option value="SMALL">SMALL 🟢</option>
-                        <option value="MEDIUM" selected>MEDIUM 🟡</option>
-                        <option value="LARGE">LARGE 🔴</option>
+                <div style="width: 120px;">
+                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa; letter-spacing: 0.3px;">SIZE VARIANT</label>
+                    <select id="item-size" onchange="autoUpdatePrice()" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white; font-weight: 600;">
+                        <option value="SMALL">SMALL</option>
+                        <option value="MEDIUM" selected>MEDIUM</option>
+                        <option value="LARGE">LARGE</option>
                     </select>
                 </div>
             </div>
 
             <div style="display: flex; gap: 10px; width: 100%;">
                 <div style="flex: 1;">
-                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px;">TIMELINE MONTH</label>
-                    <select id="timeline-month" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background-color: #fff; font-weight: 600; color: #333;">
-                        <option value="0">January (Jan)</option>
-                        <option value="1">February (Feb)</option>
-                        <option value="2">March (Mar)</option>
-                        <option value="3">April (Apr)</option>
-                        <option value="4">May (May)</option>
-                        <option value="5">June (Jun)</option>
-                        <option value="6" selected>July (Jul)</option>
-                        <option value="7">August (Aug)</option>
-                        <option value="8">September (Sep)</option>
-                        <option value="9">October (Oct)</option>
-                        <option value="10">November (Nov)</option>
-                        <option value="11">December (Dec)</option>
+                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">TIMELINE MONTH</label>
+                    <select id="timeline-month" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6" selected>July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
                     </select>
                 </div>
                 <div style="flex: 1;">
-                    <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px;">TIME PERIOD</label>
-                    <select id="timeline-period" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background-color: #fff; font-weight: 600; color: #333;">
-                        <option value="Morning">🌅 Morning (6AM-12PM)</option>
-                        <option value="Afternoon">☀️ Afternoon (12PM-5PM)</option>
-                        <option value="Evening">🌆 Evening (5PM-9PM)</option>
-                        <option value="Night">🌙 Night (9PM-6AM)</option>
+                    <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa;">TIME PERIOD</label>
+                    <select id="timeline-period" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; background: #262626; color: white; font-weight: 600;">
+                        <option value="Morning">Morning (6AM - 12PM)</option>
+                        <option value="Afternoon">Afternoon (12PM - 5PM)</option>
+                        <option value="Evening">Evening (5PM - 9PM)</option>
+                        <option value="Night">Night (9PM - 6AM)</option>
                     </select>
                 </div>
             </div>
             
-            <div id="category-box-divider" style="padding-bottom: 16px; border-bottom: 2px solid #dcdde1;">
-                <label style="font-weight: 700; font-size: 11px; display: block; margin-bottom: 4px; letter-spacing: 0.3px;">TRANSACTION CATEGORY</label>
-                <select id="category" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; box-sizing: border-box; background-color: #fff; font-weight: 600; color: #333;">
-                    <option value="Food">FOOD 🍔</option>
-                    <option value="Clothes">CLOTHES 👑</option>
-                    <option value="Electronics">ELECTRONICS ⚡</option>
-                    <option value="Salary">DEPOSIT CASH 💰</option>
-                    <option value="General">OTHER ⚪</option>
+            <div style="padding-bottom: 16px; border-bottom: 1px solid #2d2d2d;">
+                <label style="font-weight: 600; font-size: 11px; display: block; margin-bottom: 5px; color: #aaaaaa; letter-spacing: 0.3px;">TRANSACTION CATEGORY</label>
+                <select id="category" style="width: 100%; padding: 10px; border: 1px solid #3d3d3d; border-radius: 6px; font-size: 13px; box-sizing: border-box; background: #262626; color: white; font-weight: 600;">
+                    <option value="Food">FOOD</option>
+                    <option value="Clothes">CLOTHES</option>
+                    <option value="Electronics">ELECTRONICS</option>
+                    <option value="Salary">DEPOSIT CASH</option>
+                    <option value="General">OTHER</option>
                 </select>
             </div>
             
-            <button type="submit" id="form-submit-btn" style="background: #e74c3c; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; transition: background 0.2s; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
+            <button type="submit" id="form-submit-btn" style="background: #ef4444; width: 100%; height: 42px; border: none; border-radius: 6px; cursor: pointer; color: white; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase;">SUBTRACT TRANSACTION</button>
         </form>
 
-        <div id="contribution-card" style="margin-top: 20px; padding: 14px; border-radius: 10px; border: 2px solid #ccc;">
-            <div style="font-size: 11px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">📊 12-Month Contribution Map</div>
+        <!-- 12-Month Contribution Tracker (Fixed structural display) -->
+        <div style="margin-top: 24px; padding: 14px; background: #262626; border-radius: 8px; border: 1px solid #3d3d3d;">
+            <div style="font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">12-Month Contribution Map</div>
             <div id="year-contribution-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; text-align: center;"></div>
         </div>
 
-        <div id="diurnal-card" style="margin-top: 15px; padding: 14px; border-radius: 10px; border: 2px solid #ccc;">
-            <div style="font-size: 11px; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">⏰ Diurnal Money Burn Heat Map</div>
+        <!-- Diurnal Heat Map Dashboard Section -->
+        <div style="margin-top: 16px; padding: 14px; background: #262626; border-radius: 8px; border: 1px solid #3d3d3d;">
+            <div style="font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; color: #ffffff;">Diurnal Money Burn Heat Map</div>
             <div id="diurnal-heatmap-grid" style="display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
-    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #fff; box-shadow: -4px 0 15px rgba(0,0,0,0.2); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 2px solid #ccc;">
-        <div id="sidebar-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1b12c; padding-bottom: 10px; margin-bottom: 12px;">
-            <h3 id="sidebar-title" style="margin: 0; font-size: 12px; font-weight: 700; color: inherit; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
-            <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #999;">✕</button>
+    <!-- Right Hand Overlay Side Bar Log Panel Display -->
+    <div id="history-sidebar" style="position: fixed; top: 0; right: -320px; width: 300px; height: 100%; background: #1e1e1e; box-shadow: -4px 0 15px rgba(0,0,0,0.5); transition: right 0.25s ease; z-index: 9999; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-left: 1px solid #3d3d3d;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3d3d3d; padding-bottom: 10px; margin-bottom: 12px;">
+            <h3 style="margin: 0; font-size: 13px; font-weight: 700; color: #ffffff; letter-spacing: 0.3px;">VERIFIED LOG HISTORY</h3>
+            <button type="button" onclick="toggleSidebar(false)" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #888888;">✕</button>
         </div>
         <div style="flex: 1; overflow-y: auto;">
             <ul id="list" style="list-style: none; padding: 0; margin: 0;"></ul>
@@ -129,4 +127,4 @@
 
     <script src="script.js"></script>
 </body>
-    </html>
+</html>
