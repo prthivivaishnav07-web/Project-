@@ -12,11 +12,13 @@
             <button id="theme-btn" onclick="toggleTheme()" style="cursor:pointer; background:#34495e; color:white; border:0; padding:5px 10px; border-radius:3px;">Dark Mode 🌙</button>
         </div>
 
+        <!-- Wallet Card -->
         <div class="balance-box" id="balance-card" style="padding: 20px; background: #d4efdf; color: #145a32; border-radius: 8px; text-align: center; margin-bottom: 20px; transition: 0.3s;">
             <h3>Available Wallet Balance</h3>
             <div class="balance" style="font-size: 28px; font-weight: bold;">$<span id="balance">10000.00</span></div>
         </div>
 
+        <!-- Shopping Form -->
         <form id="tracker-form">
             <input type="hidden" id="edit-id" value="">
             
@@ -35,7 +37,7 @@
                 <option value="General">Other ⚪ (Gray)</option>
             </select>
             
-            <button type="submit" id="form-submit-btn" style="background: #e74c3c; color: white;">Buy Item (Subtract)</button>
+            <button type="submit" id="form-submit-btn" style="background: #e74c3c; color: white; width: 100%; padding: 12px; font-size: 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Buy Item (Subtract)</button>
         </form>
 
         <button onclick="resetData()" style="margin-top:15px; background:#7f8c8d; color:white; border:none; padding:8px; width:100%; border-radius:4px; cursor:pointer;">Clear Shopping History</button>
@@ -43,5 +45,8 @@
         <h3>Purchased Items List</h3>
         <ul id="list" class="list"></ul>
     </div>
+
+    <!-- THIS CONNECTS THE LOGIC (The Missing Piece!) -->
+    <script src="script.js"></script>
 </body>
 </html>
