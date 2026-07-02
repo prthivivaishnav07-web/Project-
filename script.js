@@ -32,28 +32,28 @@ const userGreeting = document.getElementById('user-greeting');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Expanded master database matrix layout matching user profiles
+// Comprehensive Master Matrix covering specific individual user needs
 const database = {
   "Food 🍔": {
     "Fast Food": { "McDonald's": { "Burger Meal": 299 }, "Dominos": { "Cheese Burst Pizza": 450 } },
-    "Snacks": { "Haldiram": { "Bhujia 400g": 110 }, "Lay's": { "Spanish Tomato": 20 } },
-    "Drinks": { "Amul": { "Kool Kooler 200ml": 25 }, "Coca-Cola": { "Original 1.25L": 70 } }
+    "Snacks": { "Haldiram": { "Bhujia 400g": 110 }, "Lay's": { "Classic Salted": 20 } },
+    "Drinks": { "Amul": { "Kool 200ml": 25 }, "Coca-Cola": { "Diet Coke 500ml": 40 } }
   },
   "Groceries 🛒": {
     "Rice": { "India Gate": { "5 kg Premium": 650 } },
     "Cooking Oil": { "Fortune": { "Sunflower 1 L": 180 } },
-    "Wheat Flour": { "Aashirvaad": { "Shudh Chakki 10 kg": 580 } },
-    "Sugar": { "Madhur": { "Pure Sugar 1 kg": 55 } }
+    "Wheat Flour": { "Aashirvaad": { "Chakki Atta 10 kg": 580 } },
+    "Sugar": { "Madhur": { "Sugar 1 kg": 55 } }
   },
   "Cosmetics 💅": {
-    "Shampoo": { "Dove": { "Intense Repair 340ml": 320 } },
-    "Face Wash": { "Himalaya": { "Purifying Neem 100ml": 180 } },
-    "Soap": { "Lux": { "International 150g": 45 } },
-    "Body Lotion": { "Nivea": { "Cocoa Nourish 200ml": 299 } }
+    "Shampoo": { "Dove": { "Repair 340ml": 320 } },
+    "Face Wash": { "Himalaya": { "Neem 100ml": 180 } },
+    "Soap": { "Lux": { "Beauty Bar 150g": 45 } },
+    "Body Lotion": { "Nivea": { "Nourishing 200ml": 299 } }
   },
   "Home Appliances 🏠": {
     "Mixer Grinder": { "Prestige": { "Iris 750 W": 3499 } },
-    "Electric Kettle": { "Philips": { "HD9306 1.5 L": 1799 } }
+    "Electric Kettle": { "Philips": { "1.5 L Metal": 1799 } }
   },
   "Electronics ⚡": {
     "Mobiles": { 
@@ -62,21 +62,21 @@ const database = {
       "Vivo": { "V30 Pro": 41999, "T3 Ultra": 28999 }
     },
     "Laptops": {
-      "HP": { "15s i5 16GB": 58000 },
+      "HP": { "15s Core i5": 58000 },
       "Asus": { "TUF Gaming F15": 62000 }
     },
     "Smart Watches": {
       "Apple": { "Watch Series 9": 41900 },
-      "Noise": { "ColorFit Pro 5": 2499 }
+      "Noise": { "ColorFit Pro": 2499 }
     }
   },
   "Clothing 👗": {
-    "T-Shirt": { "Puma": { "Classic L Size": 999 } },
-    "Jeans": { "Levi's": { "511 Slim 32 Size": 2499 } }
+    "T-Shirt": { "Puma": { "Sportswear L": 999 } },
+    "Jeans": { "Levi's": { "511 Slim 32": 2499 } }
   },
   "Stationery ✏️": {
-    "Notebook": { "Classmate": { "Long Book 200 Pgs": 120 } },
-    "Pen": { "Reynolds": { "Trimax Fluid Gel": 50 } }
+    "Notebook": { "Classmate": { "Long Book": 120 } },
+    "Pen": { "Reynolds": { "Trimax Gel": 50 } }
   }
 };
 
@@ -87,7 +87,7 @@ function switchUser(newUser) {
   currentUser = newUser;
   localStorage.setItem('timeline_active_user', newUser);
   updateUserInterfaceTags();
-  populateMainCategories(); // Refreshes choices tailored to user
+  populateMainCategories();
   renderDashboardUI();
 }
 
@@ -102,9 +102,16 @@ function updateUserInterfaceTags() {
     }
   });
 
-  if (currentUser === 'Vaishnav') { userGreeting.innerText = "👋 Hello Vaishnav!"; userGreeting.style.color = '#3b82f6'; }
-  else if (currentUser === 'Mom') { userGreeting.innerText = "❤️ Welcome back, Mom!"; userGreeting.style.color = '#f43f5e'; }
-  else if (currentUser === 'Dad') { userGreeting.innerText = "💼 Good Day, Dad!"; userGreeting.style.color = '#10b981'; }
+  if (currentUser === 'Mom') {
+    userGreeting.innerText = "❤️ Welcome back, Mom!";
+    userGreeting.style.color = '#f43f5e';
+  } else if (currentUser === 'Dad') {
+    userGreeting.innerText = "💼 Good Day, Dad!";
+    userGreeting.style.color = '#10b981';
+  } else {
+    userGreeting.innerText = "👋 Hello Vaishnav!";
+    userGreeting.style.color = '#3b82f6';
+  }
 
   if (titleUserTag) titleUserTag.innerText = currentUser.toUpperCase();
   if (metricUserTag) metricUserTag.innerText = currentUser.toUpperCase();
@@ -113,16 +120,15 @@ function updateUserInterfaceTags() {
 function populateMainCategories() {
   mainCategory.innerHTML = '';
   
-  // Filter list based on who is using the app
   Object.keys(database).forEach(mainCat => {
     if (currentUser === 'Mom') {
-      // Mom profile only targets Household Management
+      // Mom profile only targets Household Management & Food
       if (mainCat === "Groceries 🛒" || mainCat === "Cosmetics 💅" || mainCat === "Home Appliances 🏠" || mainCat === "Food 🍔") {
         let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
       }
     } else {
-      // Vaishnav and Dad see Electronics, Clothing, Stationery, Food etc.
-      if (mainCat !== "Groceries 🛒" && mainCat !== "Cosmetics 💅" && mainCat !== "Home Appliances 🏠") {
+      // Vaishnav and Dad see Electronics, Clothing, Stationery, and Food
+      if (mainCat === "Electronics ⚡" || mainCat === "Clothing 👗" || mainCat === "Stationery ✏️" || mainCat === "Food 🍔") {
         let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
       }
     }
@@ -339,5 +345,5 @@ itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
 form.addEventListener('submit', saveTransaction);
 
-// Initial bootstrap load run
+// Boot sequence initialization load
 switchUser(currentUser);
