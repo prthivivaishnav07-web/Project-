@@ -32,29 +32,8 @@ const userGreeting = document.getElementById('user-greeting');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Separate Database Matrix for Vaishnav/Dad vs Mom
-const defaultDatabase = {
-  "ELECTRONICS ⚡": {
-    "Mobiles 📱": {
-      "Apple": { "iPhone 14": 54900, "iPhone 15": 68900, "iPhone 16": 79900 },
-      "Samsung": { "Galaxy S24": 74999, "Galaxy S25": 82300 },
-      "OPPO": { "A3 Pro 5G": 17999, "Reno 12": 32500 }
-    },
-    "Laptops 💻": {
-      "Apple": { "MacBook Air M2": 84400, "MacBook Air M3": 104900 },
-      "HP": { "Victus 15": 62000, "Pavilion 14": 68500 }
-    }
-  },
-  "SNACKS & FAST FOOD 🍔": {
-    "Pizza Menu 🍕": {
-      "Margherita Pizza": { "Small": 199, "Medium": 299, "Large": 449 },
-      "Farmhouse Pizza": { "Small": 299, "Medium": 449, "Large": 649 }
-    }
-  }
-};
-
-// SPECIAL SECTIONS EXCLUSIVELY FOR MOM
-const momDatabase = {
+// Uniformly formatted item matrix data list mapping properly across variables
+const database = {
   "Groceries 🛒": {
     "Rice": { "India Gate": { "5 kg": 650 } },
     "Cooking Oil": { "Fortune": { "1 L": 180 } },
@@ -88,16 +67,10 @@ const momDatabase = {
 let currentUser = localStorage.getItem('timeline_active_user') || 'Vaishnav';
 let allFamilyLogs = JSON.parse(localStorage.getItem('timeline_shared_database')) || [];
 
-// Identify which database profile to look into
-function getActiveDatabase() {
-  return currentUser === 'Mom' ? momDatabase : defaultDatabase;
-}
-
 function switchUser(newUser) {
   currentUser = newUser;
   localStorage.setItem('timeline_active_user', newUser);
   updateUserInterfaceTags();
-  populateMainCategories(); // Redraw main options list depending on user
   renderDashboardUI();
 }
 
@@ -121,17 +94,14 @@ function updateUserInterfaceTags() {
 }
 
 function populateMainCategories() {
-  const currentDb = getActiveDatabase();
   mainCategory.innerHTML = '';
-  
-  Object.keys(currentDb).forEach(mainCat => {
+  Object.keys(database).forEach(mainCat => {
     let opt = document.createElement('option');
     opt.value = mainCat;
     opt.innerText = mainCat;
     mainCategory.appendChild(opt);
   });
 
-  // Always keep custom option at the bottom
   let customOpt = document.createElement('option');
   customOpt.value = "Custom / Other Deposit 💰";
   customOpt.innerText = "Custom / Other Deposit 💰";
@@ -142,9 +112,8 @@ function populateMainCategories() {
 
 function handleMainCategoryChange() {
   const selectedMain = mainCategory.value;
-  const currentDb = getActiveDatabase();
 
-  if (selectedMain === "Custom / Other Deposit 💰" || !currentDb[selectedMain]) {
+  if (selectedMain === "Custom / Other Deposit 💰" || !database[selectedMain]) {
     subCategoryContainer.style.display = 'none'; brandContainer.style.display = 'none'; modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block'; amount.value = ''; category.value = 'Salary';
   } else {
@@ -157,11 +126,10 @@ function handleMainCategoryChange() {
 
 function populateSubCategories() {
   const selectedMain = mainCategory.value;
-  const currentDb = getActiveDatabase();
   subCategory.innerHTML = '';
-  if (!currentDb[selectedMain]) return;
+  if (!database[selectedMain]) return;
   
-  Object.keys(currentDb[selectedMain]).forEach(group => {
+  Object.keys(database[selectedMain]).forEach(group => {
     let opt = document.createElement('option'); opt.value = group; opt.innerText = group;
     subCategory.appendChild(opt);
   });
@@ -171,11 +139,10 @@ function populateSubCategories() {
 function populateBrands() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
-  const currentDb = getActiveDatabase();
   itemBrand.innerHTML = '';
-  if (!currentDb[selectedMain] || !currentDb[selectedMain][selectedSub]) return;
+  if (!database[selectedMain] || !database[selectedMain][selectedSub]) return;
   
-  Object.keys(currentDb[selectedMain][selectedSub]).forEach(brand => {
+  Object.keys(database[selectedMain][selectedSub]).forEach(brand => {
     let opt = document.createElement('option'); opt.value = brand; opt.innerText = brand;
     itemBrand.appendChild(opt);
   });
@@ -186,13 +153,10 @@ function populateModels() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
-  const currentDb = getActiveDatabase();
   itemModel.innerHTML = '';
-  if (!currentDb[selectedMain] || !currentDb[selectedMain][selectedSub] || !currentDb[selectedMain][selectedSub][selectedBrand]) return;
+  if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[selectedMain][selectedSub][selectedBrand]) return;
   
-  const models = Object.keys(currentDb[selectedMain][selectedSub][selectedBrand]);
-  modelContainer.style.display = (models.length === 1 && models[0] === 'Standard') ? 'none' : 'block';
-  models.forEach(model => {
+  Object.keys(database[selectedMain][selectedSub][selectedBrand]).forEach(model => {
     let opt = document.createElement('option'); opt.value = model; opt.innerText = model;
     itemModel.appendChild(opt);
   });
@@ -202,10 +166,9 @@ function populateModels() {
 function autoUpdatePrice() {
   const selectedMain = mainCategory.value; const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value; const selectedModel = itemModel.value;
-  const currentDb = getActiveDatabase();
   
-  if (currentDb[selectedMain]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
-    amount.value = currentDb[selectedMain][selectedSub][selectedBrand][selectedModel];
+  if (database[selectedMain]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
+    amount.value = database[selectedMain][selectedSub][selectedBrand][selectedModel];
   }
 }
 
@@ -281,7 +244,7 @@ function saveTransaction(e) {
   let displayTitle = ''; const selectedMain = mainCategory.value;
 
   if (selectedMain === "Custom / Other Deposit 💰") { displayTitle = customDesc.value.trim() || 'CUSTOM'; }
-  else { displayTitle = `${itemBrand.value || 'Item'} (${itemModel.value || 'Std'})`; }
+  else { displayTitle = `${selectedSub} - ${itemBrand.value || 'Item'} (${itemModel.value || 'Std'})`; }
 
   const payload = {
     id: Date.now(), text: displayTitle.toUpperCase(), amount: finalAmount,
@@ -348,6 +311,7 @@ subCategory.addEventListener('change', populateBrands);
 itemBrand.addEventListener('change', populateModels);
 itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
-form.addEventListener('submit', saveTransaction);
 
+// Initialize form selectors properly on load
+populateMainCategories();
 switchUser(currentUser);
