@@ -244,7 +244,7 @@ function saveTransaction(e) {
   let displayTitle = ''; const selectedMain = mainCategory.value;
 
   if (selectedMain === "Custom / Other Deposit 💰") { displayTitle = customDesc.value.trim() || 'CUSTOM'; }
-  else { displayTitle = `${selectedSub} - ${itemBrand.value || 'Item'} (${itemModel.value || 'Std'})`; }
+  else { displayTitle = `${subCategory.value} - ${itemBrand.value || 'Item'} (${itemModel.value || 'Std'})`; }
 
   const payload = {
     id: Date.now(), text: displayTitle.toUpperCase(), amount: finalAmount,
@@ -311,7 +311,8 @@ subCategory.addEventListener('change', populateBrands);
 itemBrand.addEventListener('change', populateModels);
 itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
+form.addEventListener('submit', saveTransaction);
 
-// Initialize form selectors properly on load
+// Initialize everything step-by-step to prevent locking elements
 populateMainCategories();
 switchUser(currentUser);
