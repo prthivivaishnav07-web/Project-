@@ -32,8 +32,8 @@ const userGreeting = document.getElementById('user-greeting');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Product Data Matrix
-const database = {
+// Separate Database Matrix for Vaishnav/Dad vs Mom
+const defaultDatabase = {
   "ELECTRONICS ⚡": {
     "Mobiles 📱": {
       "Apple": { "iPhone 14": 54900, "iPhone 15": 68900, "iPhone 16": 79900 },
@@ -53,14 +53,51 @@ const database = {
   }
 };
 
-// Global state variables reading directly from browser localStorage memory
+// SPECIAL SECTIONS EXCLUSIVELY FOR MOM
+const momDatabase = {
+  "Groceries 🛒": {
+    "Rice": { "India Gate": { "5 kg": 650 } },
+    "Cooking Oil": { "Fortune": { "1 L": 180 } },
+    "Wheat Flour": { "Aashirvaad": { "10 kg": 580 } },
+    "Sugar": { "Madhur": { "1 kg": 55 } }
+  },
+  "Cosmetics 💅": {
+    "Shampoo": { "Dove": { "340 ml": 320 } },
+    "Face Wash": { "Himalaya": { "100 ml": 180 } },
+    "Soap": { "Lux": { "150 g": 45 } },
+    "Body Lotion": { "Nivea": { "200 ml": 299 } }
+  },
+  "Electronics ⚡": {
+    "Smartphone": { "Samsung": { "Galaxy A36 5G": 28999 } },
+    "Laptop": { "HP": { "15s i5 16GB": 58000 } }
+  },
+  "Clothing 👗": {
+    "T-Shirt": { "Puma": { "L Size": 999 } },
+    "Jeans": { "Levi's": { "32 Size": 2499 } }
+  },
+  "Stationery ✏️": {
+    "Notebook": { "Classmate": { "200 Pages": 120 } },
+    "Pen": { "Reynolds": { "Trimax": 50 } }
+  },
+  "Home Appliances 🏠": {
+    "Mixer Grinder": { "Prestige": { "750 W": 3499 } },
+    "Electric Kettle": { "Philips": { "1.5 L": 1799 } }
+  }
+};
+
 let currentUser = localStorage.getItem('timeline_active_user') || 'Vaishnav';
 let allFamilyLogs = JSON.parse(localStorage.getItem('timeline_shared_database')) || [];
+
+// Identify which database profile to look into
+function getActiveDatabase() {
+  return currentUser === 'Mom' ? momDatabase : defaultDatabase;
+}
 
 function switchUser(newUser) {
   currentUser = newUser;
   localStorage.setItem('timeline_active_user', newUser);
   updateUserInterfaceTags();
+  populateMainCategories(); // Redraw main options list depending on user
   renderDashboardUI();
 }
 
@@ -83,9 +120,31 @@ function updateUserInterfaceTags() {
   if (metricUserTag) metricUserTag.innerText = currentUser.toUpperCase();
 }
 
+function populateMainCategories() {
+  const currentDb = getActiveDatabase();
+  mainCategory.innerHTML = '';
+  
+  Object.keys(currentDb).forEach(mainCat => {
+    let opt = document.createElement('option');
+    opt.value = mainCat;
+    opt.innerText = mainCat;
+    mainCategory.appendChild(opt);
+  });
+
+  // Always keep custom option at the bottom
+  let customOpt = document.createElement('option');
+  customOpt.value = "Custom / Other Deposit 💰";
+  customOpt.innerText = "Custom / Other Deposit 💰";
+  mainCategory.appendChild(customOpt);
+
+  handleMainCategoryChange();
+}
+
 function handleMainCategoryChange() {
   const selectedMain = mainCategory.value;
-  if (selectedMain === "Custom / Other Deposit 💰" || !database[selectedMain]) {
+  const currentDb = getActiveDatabase();
+
+  if (selectedMain === "Custom / Other Deposit 💰" || !currentDb[selectedMain]) {
     subCategoryContainer.style.display = 'none'; brandContainer.style.display = 'none'; modelContainer.style.display = 'none';
     customTextContainer.style.display = 'block'; amount.value = ''; category.value = 'Salary';
   } else {
@@ -98,9 +157,11 @@ function handleMainCategoryChange() {
 
 function populateSubCategories() {
   const selectedMain = mainCategory.value;
+  const currentDb = getActiveDatabase();
   subCategory.innerHTML = '';
-  if (!database[selectedMain]) return;
-  Object.keys(database[selectedMain]).forEach(group => {
+  if (!currentDb[selectedMain]) return;
+  
+  Object.keys(currentDb[selectedMain]).forEach(group => {
     let opt = document.createElement('option'); opt.value = group; opt.innerText = group;
     subCategory.appendChild(opt);
   });
@@ -110,9 +171,11 @@ function populateSubCategories() {
 function populateBrands() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
+  const currentDb = getActiveDatabase();
   itemBrand.innerHTML = '';
-  if (!database[selectedMain] || !database[selectedMain][selectedSub]) return;
-  Object.keys(database[selectedMain][selectedSub]).forEach(brand => {
+  if (!currentDb[selectedMain] || !currentDb[selectedMain][selectedSub]) return;
+  
+  Object.keys(currentDb[selectedMain][selectedSub]).forEach(brand => {
     let opt = document.createElement('option'); opt.value = brand; opt.innerText = brand;
     itemBrand.appendChild(opt);
   });
@@ -123,9 +186,11 @@ function populateModels() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
+  const currentDb = getActiveDatabase();
   itemModel.innerHTML = '';
-  if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[selectedMain][selectedSub][selectedBrand]) return;
-  const models = Object.keys(database[selectedMain][selectedSub][selectedBrand]);
+  if (!currentDb[selectedMain] || !currentDb[selectedMain][selectedSub] || !currentDb[selectedMain][selectedSub][selectedBrand]) return;
+  
+  const models = Object.keys(currentDb[selectedMain][selectedSub][selectedBrand]);
   modelContainer.style.display = (models.length === 1 && models[0] === 'Standard') ? 'none' : 'block';
   models.forEach(model => {
     let opt = document.createElement('option'); opt.value = model; opt.innerText = model;
@@ -137,8 +202,10 @@ function populateModels() {
 function autoUpdatePrice() {
   const selectedMain = mainCategory.value; const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value; const selectedModel = itemModel.value;
-  if (database[selectedMain]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
-    amount.value = database[selectedMain][selectedSub][selectedBrand][selectedModel];
+  const currentDb = getActiveDatabase();
+  
+  if (currentDb[selectedMain]?.[selectedSub]?.[selectedBrand]?.[selectedModel] !== undefined) {
+    amount.value = currentDb[selectedMain][selectedSub][selectedBrand][selectedModel];
   }
 }
 
@@ -151,8 +218,6 @@ function toggleSidebar(open) { if (sidebar) sidebar.style.right = open ? '0px' :
 
 function recalculateDashboardMetrics() {
   const startingBalance = 10000; let totalDeposits = 0; let totalExpenses = 0;
-  
-  // Show calculations only for the active dashboard profile
   const userFilteredTransactions = allFamilyLogs.filter(t => t.user === currentUser);
 
   userFilteredTransactions.forEach(t => {
@@ -223,7 +288,6 @@ function saveTransaction(e) {
     mainCat: selectedMain, month: parseInt(timelineMonth.value), period: timelinePeriod.value, user: currentUser
   };
 
-  // Push directly into local array and save to memory
   allFamilyLogs.unshift(payload);
   localStorage.setItem('timeline_shared_database', JSON.stringify(allFamilyLogs));
   
@@ -255,9 +319,9 @@ function addTransactionDOM(t) {
   if (!list) return; const item = document.createElement('li'); const isExpense = t.amount < 0;
   let highlightColor = '#3b82f6'; if (t.amount > 0) highlightColor = '#10b981';
 
-  let tagColor = '#3b82f6'; // Vaishnav: Blue
-  if (t.user === 'Mom') tagColor = '#f43f5e'; // Mom: Pink
-  if (t.user === 'Dad') tagColor = '#10b981'; // Dad: Green
+  let tagColor = '#3b82f6'; 
+  if (t.user === 'Mom') tagColor = '#f43f5e'; 
+  if (t.user === 'Dad') tagColor = '#10b981'; 
 
   item.style.padding = "10px"; item.style.margin = "6px 0"; item.style.borderRadius = "8px";
   item.style.backgroundColor = "#1e293b"; item.style.display = "flex";
