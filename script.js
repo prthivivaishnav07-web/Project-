@@ -32,35 +32,51 @@ const userGreeting = document.getElementById('user-greeting');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Uniformly formatted item matrix data list mapping properly across variables
+// Expanded master database matrix layout matching user profiles
 const database = {
+  "Food 🍔": {
+    "Fast Food": { "McDonald's": { "Burger Meal": 299 }, "Dominos": { "Cheese Burst Pizza": 450 } },
+    "Snacks": { "Haldiram": { "Bhujia 400g": 110 }, "Lay's": { "Spanish Tomato": 20 } },
+    "Drinks": { "Amul": { "Kool Kooler 200ml": 25 }, "Coca-Cola": { "Original 1.25L": 70 } }
+  },
   "Groceries 🛒": {
-    "Rice": { "India Gate": { "5 kg": 650 } },
-    "Cooking Oil": { "Fortune": { "1 L": 180 } },
-    "Wheat Flour": { "Aashirvaad": { "10 kg": 580 } },
-    "Sugar": { "Madhur": { "1 kg": 55 } }
+    "Rice": { "India Gate": { "5 kg Premium": 650 } },
+    "Cooking Oil": { "Fortune": { "Sunflower 1 L": 180 } },
+    "Wheat Flour": { "Aashirvaad": { "Shudh Chakki 10 kg": 580 } },
+    "Sugar": { "Madhur": { "Pure Sugar 1 kg": 55 } }
   },
   "Cosmetics 💅": {
-    "Shampoo": { "Dove": { "340 ml": 320 } },
-    "Face Wash": { "Himalaya": { "100 ml": 180 } },
-    "Soap": { "Lux": { "150 g": 45 } },
-    "Body Lotion": { "Nivea": { "200 ml": 299 } }
-  },
-  "Electronics ⚡": {
-    "Smartphone": { "Samsung": { "Galaxy A36 5G": 28999 } },
-    "Laptop": { "HP": { "15s i5 16GB": 58000 } }
-  },
-  "Clothing 👗": {
-    "T-Shirt": { "Puma": { "L Size": 999 } },
-    "Jeans": { "Levi's": { "32 Size": 2499 } }
-  },
-  "Stationery ✏️": {
-    "Notebook": { "Classmate": { "200 Pages": 120 } },
-    "Pen": { "Reynolds": { "Trimax": 50 } }
+    "Shampoo": { "Dove": { "Intense Repair 340ml": 320 } },
+    "Face Wash": { "Himalaya": { "Purifying Neem 100ml": 180 } },
+    "Soap": { "Lux": { "International 150g": 45 } },
+    "Body Lotion": { "Nivea": { "Cocoa Nourish 200ml": 299 } }
   },
   "Home Appliances 🏠": {
-    "Mixer Grinder": { "Prestige": { "750 W": 3499 } },
-    "Electric Kettle": { "Philips": { "1.5 L": 1799 } }
+    "Mixer Grinder": { "Prestige": { "Iris 750 W": 3499 } },
+    "Electric Kettle": { "Philips": { "HD9306 1.5 L": 1799 } }
+  },
+  "Electronics ⚡": {
+    "Mobiles": { 
+      "Apple": { "iPhone 15 128GB": 68900, "iPhone 15 Pro": 109900 },
+      "Samsung": { "Galaxy S24 Ultra": 124999, "Galaxy A36 5G": 28999 },
+      "Vivo": { "V30 Pro": 41999, "T3 Ultra": 28999 }
+    },
+    "Laptops": {
+      "HP": { "15s i5 16GB": 58000 },
+      "Asus": { "TUF Gaming F15": 62000 }
+    },
+    "Smart Watches": {
+      "Apple": { "Watch Series 9": 41900 },
+      "Noise": { "ColorFit Pro 5": 2499 }
+    }
+  },
+  "Clothing 👗": {
+    "T-Shirt": { "Puma": { "Classic L Size": 999 } },
+    "Jeans": { "Levi's": { "511 Slim 32 Size": 2499 } }
+  },
+  "Stationery ✏️": {
+    "Notebook": { "Classmate": { "Long Book 200 Pgs": 120 } },
+    "Pen": { "Reynolds": { "Trimax Fluid Gel": 50 } }
   }
 };
 
@@ -71,6 +87,7 @@ function switchUser(newUser) {
   currentUser = newUser;
   localStorage.setItem('timeline_active_user', newUser);
   updateUserInterfaceTags();
+  populateMainCategories(); // Refreshes choices tailored to user
   renderDashboardUI();
 }
 
@@ -95,11 +112,20 @@ function updateUserInterfaceTags() {
 
 function populateMainCategories() {
   mainCategory.innerHTML = '';
+  
+  // Filter list based on who is using the app
   Object.keys(database).forEach(mainCat => {
-    let opt = document.createElement('option');
-    opt.value = mainCat;
-    opt.innerText = mainCat;
-    mainCategory.appendChild(opt);
+    if (currentUser === 'Mom') {
+      // Mom profile only targets Household Management
+      if (mainCat === "Groceries 🛒" || mainCat === "Cosmetics 💅" || mainCat === "Home Appliances 🏠" || mainCat === "Food 🍔") {
+        let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
+      }
+    } else {
+      // Vaishnav and Dad see Electronics, Clothing, Stationery, Food etc.
+      if (mainCat !== "Groceries 🛒" && mainCat !== "Cosmetics 💅" && mainCat !== "Home Appliances 🏠") {
+        let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
+      }
+    }
   });
 
   let customOpt = document.createElement('option');
@@ -313,6 +339,5 @@ itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
 form.addEventListener('submit', saveTransaction);
 
-// Initialize everything step-by-step to prevent locking elements
-populateMainCategories();
+// Initial bootstrap load run
 switchUser(currentUser);
