@@ -25,6 +25,12 @@ const sidebar = document.getElementById('history-sidebar');
 const yearGrid = document.getElementById('year-contribution-grid');
 const diurnalGrid = document.getElementById('diurnal-heatmap-grid');
 
+// Dynamic Multi-User UI Label Tag Selectors
+const titleUserTag = document.getElementById('title-user-tag');
+const metricUserTag = document.getElementById('metric-user-tag');
+const sidebarUserTag = document.getElementById('sidebar-user-tag');
+const userGreeting = document.getElementById('user-greeting');
+
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
@@ -83,10 +89,56 @@ const database = {
   }
 };
 
-// Initialization and Data Validation
-let rawTransactions = JSON.parse(localStorage.getItem('timeline_transactions')) || [];
-let transactions = rawTransactions.filter(t => t && typeof t.amount === 'number' && !isNaN(t.amount));
-localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
+// Multi-Wallet Session Configuration Variables
+let currentUser = localStorage.getItem('timeline_active_user') || 'Vaishnav';
+let transactions = [];
+
+// Core Switching Engine for Profiles
+function switchUser(newUser) {
+  currentUser = newUser;
+  localStorage.setItem('timeline_active_user', newUser);
+  
+  // Fetch scoped data array matching current selected user key string
+  let rawTransactions = JSON.parse(localStorage.getItem(`timeline_transactions_${currentUser}`)) || [];
+  transactions = rawTransactions.filter(t => t && typeof t.amount === 'number' && !isNaN(t.amount));
+  localStorage.setItem(`timeline_transactions_${currentUser}`, JSON.stringify(transactions));
+
+  updateUserInterfaceTags();
+  init();
+}
+
+// Visual layout updating for selected active profile context tags
+function updateUserInterfaceTags() {
+  // Update button active focus styling states
+  document.querySelectorAll('.user-btn').forEach(btn => {
+    if (btn.id === `btn-${currentUser}`) {
+      btn.style.background = '#3b82f6';
+      btn.style.color = '#ffffff';
+      btn.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.5)';
+    } else {
+      btn.style.background = '#1e293b';
+      btn.style.color = '#94a3b8';
+      btn.style.boxShadow = 'none';
+    }
+  });
+
+  // Assign user profile greeting text nodes dynamically
+  if (currentUser === 'Vaishnav') {
+    userGreeting.innerText = "👋 Hello Vaishnav! Monitoring operations.";
+    userGreeting.style.color = '#3b82f6';
+  } else if (currentUser === 'Mom') {
+    userGreeting.innerText = "❤️ Welcome back, Mom! Manage your balances.";
+    userGreeting.style.color = '#f43f5e';
+  } else if (currentUser === 'Dad') {
+    userGreeting.innerText = "💼 Good Day, Dad! Overview of ledger records.";
+    userGreeting.style.color = '#10b981';
+  }
+
+  // Bind tags into standard element headers
+  if (titleUserTag) titleUserTag.innerText = currentUser.toUpperCase();
+  if (metricUserTag) metricUserTag.innerText = currentUser.toUpperCase();
+  if (sidebarUserTag) sidebarUserTag.innerText = currentUser.toUpperCase();
+}
 
 function handleMainCategoryChange() {
   const selectedMain = mainCategory.value;
@@ -173,7 +225,7 @@ function updateButtonMode() {
     submitBtn.style.background = '#10b981';
     submitBtn.innerText = 'DEPOSIT FUNDS';
   } else {
-    submitBtn.style.background = '#3b82f6'; // Standard modern primary blue color token
+    submitBtn.style.background = '#3b82f6';
     submitBtn.innerText = 'TRANSACTION';
   }
 }
@@ -219,7 +271,6 @@ function renderYearlyMap() {
     }
   });
 
-  // Render contribution block with fully distinct colors
   monthsList.forEach((month, index) => {
     const spend = monthlySpend[index];
     let cellBg = '#1e293b'; let textColor = '#64748b';
@@ -250,7 +301,6 @@ function renderDiurnalMap() {
     }
   });
 
-  // Map entries layout populated with distinct colored data nodes
   dayPeriods.forEach(period => {
     const amt = periodSpend[period];
     let barColor = '#475569';
@@ -303,6 +353,7 @@ function saveTransaction(e) {
   updateLocalStorage();
   init();
   customDesc.value = '';
+  amount.value = '';
 }
 
 function removeTransaction(id) {
@@ -312,7 +363,7 @@ function removeTransaction(id) {
 }
 
 function resetData() {
-  if (confirm("Clear wallet timeline history?")) {
+  if (confirm(`Clear all timeline wallet history for ${currentUser}?`)) {
     transactions = [];
     updateLocalStorage();
     init();
@@ -320,7 +371,7 @@ function resetData() {
 }
 
 function updateLocalStorage() {
-  localStorage.setItem('timeline_transactions', JSON.stringify(transactions));
+  localStorage.setItem(`timeline_transactions_${currentUser}`, JSON.stringify(transactions));
 }
 
 function init() {
@@ -365,6 +416,5 @@ itemModel.addEventListener('change', autoUpdatePrice);
 category.addEventListener('change', updateButtonMode);
 form.addEventListener('submit', saveTransaction);
 
-// Launch Instance Configuration
-handleMainCategoryChange();
-init();
+// Trigger Initial Dynamic Active Session Configuration
+switchUser(currentUser);
