@@ -32,7 +32,7 @@ const userGreeting = document.getElementById('user-greeting');
 const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dayPeriods = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
-// Comprehensive Master Matrix covering specific individual user needs
+// Master item data setup
 const database = {
   "Food 🍔": {
     "Fast Food": { "McDonald's": { "Burger Meal": 299 }, "Dominos": { "Cheese Burst Pizza": 450 } },
@@ -103,14 +103,11 @@ function updateUserInterfaceTags() {
   });
 
   if (currentUser === 'Mom') {
-    userGreeting.innerText = "❤️ Welcome back, Mom!";
-    userGreeting.style.color = '#f43f5e';
+    if (userGreeting) { userGreeting.innerText = "❤️ Welcome back, Mom!"; userGreeting.style.color = '#f43f5e'; }
   } else if (currentUser === 'Dad') {
-    userGreeting.innerText = "💼 Good Day, Dad!";
-    userGreeting.style.color = '#10b981';
+    if (userGreeting) { userGreeting.innerText = "💼 Good Day, Dad!"; userGreeting.style.color = '#10b981'; }
   } else {
-    userGreeting.innerText = "👋 Hello Vaishnav!";
-    userGreeting.style.color = '#3b82f6';
+    if (userGreeting) { userGreeting.innerText = "👋 Hello Vaishnav!"; userGreeting.style.color = '#3b82f6'; }
   }
 
   if (titleUserTag) titleUserTag.innerText = currentUser.toUpperCase();
@@ -118,16 +115,17 @@ function updateUserInterfaceTags() {
 }
 
 function populateMainCategories() {
+  if (!mainCategory) return;
   mainCategory.innerHTML = '';
   
   Object.keys(database).forEach(mainCat => {
     if (currentUser === 'Mom') {
-      // Mom profile only targets Household Management & Food
+      // Mom profile only sees household items and food
       if (mainCat === "Groceries 🛒" || mainCat === "Cosmetics 💅" || mainCat === "Home Appliances 🏠" || mainCat === "Food 🍔") {
         let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
       }
     } else {
-      // Vaishnav and Dad see Electronics, Clothing, Stationery, and Food
+      // Vaishnav and Dad see electronics, clothing, stationery, food
       if (mainCat === "Electronics ⚡" || mainCat === "Clothing 👗" || mainCat === "Stationery ✏️" || mainCat === "Food 🍔") {
         let opt = document.createElement('option'); opt.value = mainCat; opt.innerText = mainCat; mainCategory.appendChild(opt);
       }
@@ -146,11 +144,17 @@ function handleMainCategoryChange() {
   const selectedMain = mainCategory.value;
 
   if (selectedMain === "Custom / Other Deposit 💰" || !database[selectedMain]) {
-    subCategoryContainer.style.display = 'none'; brandContainer.style.display = 'none'; modelContainer.style.display = 'none';
-    customTextContainer.style.display = 'block'; amount.value = ''; category.value = 'Salary';
+    if (subCategoryContainer) subCategoryContainer.style.display = 'none';
+    if (brandContainer) brandContainer.style.display = 'none';
+    if (modelContainer) modelContainer.style.display = 'none';
+    if (customTextContainer) customTextContainer.style.display = 'block';
+    amount.value = ''; category.value = 'Salary';
   } else {
-    subCategoryContainer.style.display = 'block'; brandContainer.style.display = 'block'; modelContainer.style.display = 'block';
-    customTextContainer.style.display = 'none'; category.value = 'Expense';
+    if (subCategoryContainer) subCategoryContainer.style.display = 'block';
+    if (brandContainer) brandContainer.style.display = 'block';
+    if (modelContainer) modelContainer.style.display = 'block';
+    if (customTextContainer) customTextContainer.style.display = 'none';
+    category.value = 'Expense';
     populateSubCategories();
   }
   updateButtonMode();
@@ -158,6 +162,7 @@ function handleMainCategoryChange() {
 
 function populateSubCategories() {
   const selectedMain = mainCategory.value;
+  if (!subCategory) return;
   subCategory.innerHTML = '';
   if (!database[selectedMain]) return;
   
@@ -171,6 +176,7 @@ function populateSubCategories() {
 function populateBrands() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
+  if (!itemBrand) return;
   itemBrand.innerHTML = '';
   if (!database[selectedMain] || !database[selectedMain][selectedSub]) return;
   
@@ -185,8 +191,11 @@ function populateModels() {
   const selectedMain = mainCategory.value;
   const selectedSub = subCategory.value;
   const selectedBrand = itemBrand.value;
+  if (!itemModel) return;
   itemModel.innerHTML = '';
-  if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[selectedMain][selectedSub][selectedBrand]) return;
+  if (!database[selectedMain] || !database[selectedMain][selectedSub] || !database[database[selectedMain][selectedSub][selectedBrand]]) {
+    if (!database[selectedMain]?.[selectedSub]?.[selectedBrand]) return;
+  }
   
   Object.keys(database[selectedMain][selectedSub][selectedBrand]).forEach(model => {
     let opt = document.createElement('option'); opt.value = model; opt.innerText = model;
@@ -205,6 +214,7 @@ function autoUpdatePrice() {
 }
 
 function updateButtonMode() {
+  if (!submitBtn) return;
   if (category.value === 'Salary') { submitBtn.style.background = '#10b981'; submitBtn.innerText = 'DEPOSIT FUNDS'; }
   else { submitBtn.style.background = '#3b82f6'; submitBtn.innerText = 'TRANSACTION'; }
 }
@@ -286,7 +296,8 @@ function saveTransaction(e) {
   allFamilyLogs.unshift(payload);
   localStorage.setItem('timeline_shared_database', JSON.stringify(allFamilyLogs));
   
-  customDesc.value = ''; amount.value = ''; 
+  if (customDesc) customDesc.value = ''; 
+  amount.value = ''; 
   renderDashboardUI();
 }
 
@@ -338,12 +349,12 @@ function addTransactionDOM(t) {
   list.appendChild(item);
 }
 
-mainCategory.addEventListener('change', handleMainCategoryChange);
-subCategory.addEventListener('change', populateBrands);
-itemBrand.addEventListener('change', populateModels);
-itemModel.addEventListener('change', autoUpdatePrice);
-category.addEventListener('change', updateButtonMode);
-form.addEventListener('submit', saveTransaction);
+if (mainCategory) mainCategory.addEventListener('change', handleMainCategoryChange);
+if (subCategory) subCategory.addEventListener('change', populateBrands);
+if (itemBrand) itemBrand.addEventListener('change', populateModels);
+if (itemModel) itemModel.addEventListener('change', autoUpdatePrice);
+if (category) category.addEventListener('change', updateButtonMode);
+if (form) form.addEventListener('submit', saveTransaction);
 
 // Boot sequence initialization load
 switchUser(currentUser);
